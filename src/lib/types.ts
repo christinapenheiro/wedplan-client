@@ -26,5 +26,7 @@ export interface IService extends IAddServiceForm {
   vendorId: string;
   vendorEmail: string;
   createdAt: string;
-  status: "Active" | "Draft" | "Pending";
+  status: "Active" | "Pending" | "Declined";
+  /** Vendor-controlled booking availability; missing on legacy records means available. */
+  isAvailable?: boolean;
 }

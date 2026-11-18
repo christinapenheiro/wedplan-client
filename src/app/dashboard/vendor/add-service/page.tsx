@@ -190,6 +190,7 @@ export default function VendorAddServicePage() {
         imageUrls,
         vendorId: userId,
         vendorEmail: userEmail,
+        status: "Pending", // New services start as Pending for admin review
       });
       // setStatus("success");
       toast.add({
