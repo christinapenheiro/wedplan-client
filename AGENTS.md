@@ -8,171 +8,65 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# WedPlan — Wedding Planning Web Application
+# WedPlan — Agent Instructions
 
-Welcome to **WedPlan**. This document serves as the primary technical specification, architectural guideline, and coding standard for all AI agents and developers working on this codebase.
+Wedding planning platform with role-based dashboards. Roles are `Customer | Vendor | Admin` (`IAccountRole` in `src/lib/types.ts`); new users default to `Customer`.
 
----
+**Current state (early stage):** every dashboard page is a `"use client"` component rendering hardcoded mock data. The only backend route is the Better Auth handler. There is no data layer, no middleware, and no per-route authorization yet. Roadmap: replace mock data with real server-fetched data, add JWT middleware and route authorization — prefer server components when adding real data fetching.
 
-## 1. Project Overview & Domain
-
-**WedPlan** is a modern, responsive wedding planning web application designed to help couples, wedding planners, and guests streamline the wedding lifecycle.
-
-### Core Feature Domains
-- **Guest Management & RSVP**: Guest lists, meal preferences, dietary restrictions, attendance tracking, and invitation management.
-- **Budget & Expense Tracking**: Categorized budgeting, payment milestones, deposits, and vendor quotes.
-- **Vendor Management**: Directory and management of venues, caterers, photographers, florists, music/DJs, decorators, etc.
-- **Checklist & Timeline**: Countdown checklists, tasks assignment, and day-of-event schedule runsheets.
-- **Seating & Floor Plans**: Table allocations, guest pairings, and venue floor layout visualization.
-- **Registry & Wishes**: Gift registry links, honeymoon funds, and personalized messages.
-
----
-
-## 2. Tech Stack & Dependencies
-
-| Area | Technology / Library | Version / Details |
-|---|---|---|
-| **Framework** | Next.js (App Router, Turbopack) | `16.4.6` (React Compiler, `cacheComponents`, `partialPrefetching`) |
-| **Core UI** | React / React DOM | `19.3.0` |
-| **Language** | TypeScript | `^5` (Strict mode enabled) |
-| **Database** | MongoDB Native Driver | `^7.9.0` (Database name: `wedplan`) |
-| **Authentication** | Better Auth + Mongo Adapter | `^1.7.25` (Email/Password, Google OAuth, JWT plugin, session cookies) |
-| **Styling** | Tailwind CSS v4 + Turbopack | `4.3.3` (`@tailwindcss/turbopack`, `tw-animate-css`, CSS variables with `oklch`) |
-| **Component Primitives** | Base UI + Shadcn UI (`base-nova`) | `@base-ui/react` (`^1.9.0`), `class-variance-authority` (`^0.7.1`), `cn` |
-| **Icons** | Lucide React | `^1.74.0` |
-| **Animations** | Motion (Framer Motion) | `^14.14.0` |
-
----
-
-## 3. Brand Theme & Color Palette
-
-WedPlan utilizes an elegant, romantic wedding-inspired palette defined by three core colors:
-
-| Color Role | Hex Code | Purpose & Application |
-|---|---|---|
-| **Primary / Deep Accent** | `#99616E` | Main interactive brand color (CTA buttons, active ring highlights, key icons, focused states) |
-| **Secondary / Pastel Lilac** | `#C4B6D0` | Soft romantic accent (active cards, selection borders, badges, tint overlays) |
-| **Neutral / Warm Mist** | `#D2D3D0` | Structural neutral (subtle borders, divider lines, inputs, surface boundaries) |
-
----
-
-## 4. Architecture & File Structure
-
-```
-wedplan_client/
-├── public/                 # Static assets (SVGs, logos, icons)
-├── src/
-│   ├── app/                # Next.js App Router
-│   │   ├── api/            # Route handlers
-│   │   │   └── auth/       # Better Auth wildcard handler ([...all]/route.ts)
-│   │   ├── globals.css     # Tailwind v4 theme definitions and CSS variables
-│   │   ├── layout.tsx      # Root layout with Lato font and base styles
-│   │   └── page.tsx        # Application landing / home page
-│   ├── components/
-│   │   └── ui/             # Reusable UI primitives based on @base-ui/react & CVA
-│   │       └── button.tsx  # Example Base UI button with variants
-│   ├── hooks/              # Custom React client hooks
-│   └── lib/
-│       ├── auth.ts         # Better Auth server configuration & MongoDB adapter
-│       ├── auth-client.ts  # Better Auth client instance (createAuthClient)
-│       └── utils.ts        # Helper utilities (e.g., `cn` class merging)
-├── components.json         # Shadcn configuration (base-nova, Base UI)
-├── next.config.ts          # Next.js configuration (Turbopack, compiler flags)
-├── package.json            # Dependencies and scripts
-└── tsconfig.json           # Path aliases (@/* -> ./src/*)
-```
-
-### Path Aliases
-Import using standard path aliases defined in `tsconfig.json` and `components.json`:
-- `@/components/*` -> `src/components/*`
-- `@/components/ui/*` -> `src/components/ui/*`
-- `@/lib/*` -> `src/lib/*`
-- `@/hooks/*` -> `src/hooks/*`
-- `@/*` -> `src/*`
-
----
-
-## 5. Coding Standards & Agent Principles
-
-All agents must adhere to the following coding principles:
-
-### A. Simplicity & Readability First
-- Write **clean, easy-to-read, standard TypeScript/React code**. Avoid premature optimizations, convoluted abstractions, or deeply nested utility chains.
-- Prefer self-explanatory naming conventions (e.g., `calculateRemainingBudget`, `updateGuestRsvpStatus`) over abbreviated names.
-
-### B. Short Explanatory Comments on Difficult Functions
-- Always add **short, concise comments** above complex or non-obvious algorithms, data transformations, calculation engines, or security checks.
-- State **what** the function does and **how** it works in 1–3 clear sentences.
-- Example:
-  ```typescript
-  /**
-   * Distributes guests across available table capacities while respecting
-   * dietary grouping constraints and avoiding conflicting guest pairs.
-   * Uses a greedy assignment algorithm prioritized by party size.
-   */
-  export function arrangeTableSeating(guests: Guest[], tables: Table[]): SeatingResult {
-    // ...
-  }
-  ```
-
-### C. Server Components by Default (Next.js 16)
-- Keep components as React Server Components (RSC) by default for performance and SEO.
-- Add `"use client"` only when interactive state (`useState`, `useEffect`, event listeners), browser APIs, or custom hooks are strictly required.
-- Isolate client-side state into leaf components to maximize server-rendered coverage.
-
-### D. Authentication Usage
-- **Server-side**: Use `auth` from `@/lib/auth` (e.g. `auth.api.getSession({ headers })` inside route handlers or server actions).
-- **Client-side**: Use `authClient` from `@/lib/auth-client` (e.g., `authClient.useSession()`, `authClient.signIn`, `authClient.signOut`).
-
-### E. Database Access (MongoDB)
-- Connect through the established MongoDB client or shared client instance in `@/lib/auth.ts` / `@/lib/db.ts`.
-- Ensure indexes are defined for frequently queried fields (e.g., `weddingId`, `userId`, `email`).
-- Structure collections logically around the wedding domain (e.g., `weddings`, `guests`, `budget_items`, `vendors`, `tasks`).
-
-### F. Styling & Component Design
-- Use Tailwind CSS v4 classes mapped with CSS variables (`primary`, `secondary`, `muted`, `accent`, `card`, `destructive`).
-- Use Base UI (`@base-ui/react`) primitives wrapped with `class-variance-authority` (`cva`) for consistent accessibility and custom styling.
-- Use `motion` for smooth, purposeful animations (modal transitions, step wizards, drawer slides).
-
----
-
-## 6. Environment Variables Reference
-
-Ensure the following environment variables are configured in `.env` (never commit secrets):
-
-```env
-# MongoDB Connection
-MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
-
-# Better Auth Configuration
-BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_SECRET=your-secure-random-auth-secret
-
-# Google OAuth (Optional / Configured in auth.ts)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-# ImgBB API Key (For Profile Image uploads)
-NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key
-
-# Email Service (e.g., Resend for RSVP invites & password resets)
-# RESEND_API_KEY=re_your_api_key
-```
-
----
-
-## 7. Common Development Commands
+## Commands
 
 ```bash
-# Start local development server with Turbopack
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-
-# Run ESLint validation
-npm run lint
+npm run dev      # Turbopack dev server
+npm run build    # production build (Turbopack)
+npm run start    # production server
+npm run lint     # eslint (flat config in eslint.config.mjs)
 ```
+
+- No tests exist (no test framework, no CI). Verification = `npm run lint` + `npx tsc --noEmit` (typecheck is not scripted).
+
+## Framework quirks
+
+- Next.js `16.4.6` with **React Compiler enabled** (`reactCompiler: true` in `next.config.ts`) — do not add manual `useMemo`/`useCallback` memoization. `cacheComponents` / `partialPrefetching` are present but commented out.
+- Tailwind v4 is **CSS-first**: the whole theme (palette, dark variant, fonts, radii) lives in `src/app/globals.css`. There is no `tailwind.config` file; Tailwind is loaded via a `turbopack.rules` CSS loader in `next.config.ts`.
+- Only path alias is `@/*` → `./src/*` (tsconfig). The shadcn aliases in `components.json` all resolve through it.
+- `README.md` is untouched create-next-app boilerplate (wrong font, wrong structure) — don't trust it.
+
+## Architecture
+
+- `src/app/api/auth/[...all]/route.ts` — the only API route (Better Auth wildcard handler).
+- `src/app/(auth)/sign-in|sign-up` — auth pages. Sign-up uploads avatars client-side to ImgBB (`NEXT_PUBLIC_IMGBB_API_KEY`) and sends the `role` field (allowed by `user.additionalFields.role.input: true` in `src/lib/auth.ts`).
+- `src/app/dashboard/layout.tsx` (server component) calls `auth.api.getSession({ headers })` and redirects to `/sign-in` when unauthenticated, then passes `role` to `DashboardShell` → `AppSidebar` (`src/components/shared/app-sidebar.tsx`), which renders role-specific nav.
+- **Role is navigation UI only** — no middleware, no per-route role checks. New privileged routes need their own guard until JWT middleware lands.
+- MongoDB (database `wedplan`) is accessed only through the `MongoClient` in `src/lib/auth.ts` via the Better Auth mongo adapter. There is no `db.ts` or shared query layer.
+
+## Auth conventions
+
+- Server side (layouts, route handlers): `auth` from `@/lib/auth` — e.g. `auth.api.getSession({ headers: await headers() })`.
+- Client side: `authClient` from `@/lib/auth-client` — `authClient.useSession()`, `signIn`, `signOut`. Its `baseURL` is hardcoded to `http://localhost:3000`.
+
+## Styling & components
+
+- Shadcn UI (`base-nova` style) over `@base-ui/react` + `class-variance-authority`; icons from `lucide-react`; animation via `motion`.
+- Brand palette as CSS variables in `globals.css` `:root`: primary `#99616E`, secondary/accent `#C4B6D0`, border/input `#D2D3D0`. Prefer tokens (`bg-primary`, `border-border`) over raw hex; some existing components hardcode hex classes.
+- Font is Lato via `next/font/google`, exposed as `--font-lato` and mapped to `--font-sans` in `globals.css`.
+
+## Code style
+
+- Keep components as server components by default; add `"use client"` only for real interactivity, isolated to leaf components.
+- Add a short JSDoc comment on non-obvious functions (what + how, 1–3 sentences) — existing code follows this convention.
+
+## Environment
+
+`.env` (never commit) — variables actually referenced by code:
+
+```env
+MONGODB_URI=...                # auth.ts MongoDB connection
+BETTER_AUTH_URL=...
+BETTER_AUTH_SECRET=...
+GOOGLE_CLIENT_ID=...           # Google OAuth provider in auth.ts
+GOOGLE_CLIENT_SECRET=...
+NEXT_PUBLIC_IMGBB_API_KEY=...  # client-side avatar upload at sign-up
+```
+
+`RESEND_API_KEY` appears only in commented-out code (no email sending yet). `next.config.ts` allowlists `**.ibb.co` / `**.ibb.co.com` as remote image hosts — add patterns there for any new image CDN.
