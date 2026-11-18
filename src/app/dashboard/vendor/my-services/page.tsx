@@ -52,60 +52,60 @@ import {
 } from "lucide-react";
 
 const CATEGORIES: IServiceCategory[] = [
-  "Photography",
-  "Venue",
-  "Floral",
-  "Catering",
-  "Makeup",
-  "Fashion",
-  "Music",
-  "Planner",
+  "photography",
+  "venue",
+  "floral",
+  "catering",
+  "makeup",
+  "fashion",
+  "music",
+  "planner",
 ];
 
 const CATEGORY_LABELS: Record<IServiceCategory, string> = {
-  Photography: "Photography & Videography",
-  Venue: "Wedding Venues",
-  Floral: "Decoration & Florist",
-  Catering: "Catering Services",
-  Makeup: "Makeup & Styling",
-  Fashion: "Wedding Fashion",
-  Music: "Music & Entertainment",
-  Planner: "Wedding Planner",
+  photography: "Photography & Videography",
+  venue: "Wedding Venues",
+  floral: "Decoration & Florist",
+  catering: "Catering Services",
+  makeup: "Makeup & Styling",
+  fashion: "Wedding Fashion",
+  music: "Music & Entertainment",
+  planner: "Wedding Planner",
 };
 
 const CATEGORY_ICONS: Record<
   IServiceCategory,
   React.ComponentType<{ className?: string }>
 > = {
-  Photography: Camera,
-  Venue: Landmark,
-  Floral: Flower2,
-  Catering: UtensilsCrossed,
-  Makeup: Sparkles,
-  Fashion: Shirt,
-  Music: Music,
-  Planner: ClipboardList,
+  photography: Camera,
+  venue: Landmark,
+  floral: Flower2,
+  catering: UtensilsCrossed,
+  makeup: Sparkles,
+  fashion: Shirt,
+  music: Music,
+  planner: ClipboardList,
 };
 
-type ServiceStatus = "Active" | "Pending" | "Declined";
+type ServiceStatus = "active" | "pending" | "declined";
 
 const STATUS_FILTERS: ("All" | ServiceStatus)[] = [
   "All",
-  "Active",
-  "Pending",
-  "Declined",
+  "active",
+  "pending",
+  "declined",
 ];
 
 /** Normalises a stored status — records saved without one are treated as awaiting review. */
 function getStatus(service: IService): ServiceStatus {
-  if (service.status === "Active") return "Active";
-  if (service.status === "Declined") return "Declined";
-  return "Pending";
+  if (service.status === "active") return "active";
+  if (service.status === "declined") return "declined";
+  return "pending";
 }
 
 /** Badge styling, icon and explanation for each approval state. */
 function statusMeta(status: ServiceStatus) {
-  if (status === "Active") {
+  if (status === "active") {
     return {
       icon: CheckCircle2,
       label: "Active",
@@ -115,7 +115,7 @@ function statusMeta(status: ServiceStatus) {
     };
   }
 
-  if (status === "Declined") {
+  if (status === "declined") {
     return {
       icon: XCircle,
       label: "Declined",
@@ -241,9 +241,9 @@ export default function VendorMyServicesPage() {
 
   const counts = {
     total: services.length,
-    active: services.filter((s) => getStatus(s) === "Active").length,
-    pending: services.filter((s) => getStatus(s) === "Pending").length,
-    declined: services.filter((s) => getStatus(s) === "Declined").length,
+    active: services.filter((s) => getStatus(s) === "active").length,
+    pending: services.filter((s) => getStatus(s) === "pending").length,
+    declined: services.filter((s) => getStatus(s) === "declined").length,
   };
 
   const query = search.trim().toLowerCase();
@@ -480,7 +480,7 @@ export default function VendorMyServicesPage() {
                     : "border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                <span>{filter === "Pending" ? "Pending" : filter}</span>
+                <span>{filter === "pending" ? "Pending" : filter}</span>
                 <span
                   className={cn(
                     "rounded-full px-1.5 text-[10px] font-semibold",

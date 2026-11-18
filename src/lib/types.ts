@@ -1,14 +1,14 @@
-export type IAccountRole = "Customer" | "Vendor" | "Admin";
+export type IAccountRole = "customer" | "vendor" | "admin";
 
 export type IServiceCategory =
-  | "Photography"
-  | "Venue"
-  | "Floral"
-  | "Catering"
-  | "Makeup"
-  | "Fashion"
-  | "Music"
-  | "Planner";
+  | "photography"
+  | "venue"
+  | "floral"
+  | "catering"
+  | "makeup"
+  | "fashion"
+  | "music"
+  | "planner";
 
 /** Form state used in the Add Service form (before submission) */
 export interface IAddServiceForm {
@@ -25,8 +25,12 @@ export interface IService extends IAddServiceForm {
   _id: string;
   vendorId: string;
   vendorEmail: string;
+  /** Optional vendor display name, when the record includes one. */
+  vendorName?: string;
+  /** Optional vendor location, when the record includes one. */
+  location?: string;
   createdAt: string;
-  status: "Active" | "Pending" | "Declined";
+  status: "active" | "pending" | "declined";
   /** Vendor-controlled booking availability; missing on legacy records means available. */
   isAvailable?: boolean;
 }

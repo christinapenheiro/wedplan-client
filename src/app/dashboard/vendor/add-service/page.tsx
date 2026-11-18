@@ -30,25 +30,25 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "@/components/ui/toast";
 
 const CATEGORIES: IServiceCategory[] = [
-  "Photography",
-  "Venue",
-  "Floral",
-  "Catering",
-  "Makeup",
-  "Fashion",
-  "Music",
-  "Planner",
+  "photography",
+  "venue",
+  "floral",
+  "catering",
+  "makeup",
+  "fashion",
+  "music",
+  "planner",
 ];
 
 const CATEGORY_LABELS: Record<IServiceCategory, string> = {
-  Photography: "Photography & Videography",
-  Venue: "Wedding Venues",
-  Floral: "Decoration & Florist",
-  Catering: "Catering Services",
-  Makeup: "Makeup & Styling",
-  Fashion: "Wedding Fashion",
-  Music: "Music & Entertainment",
-  Planner: "Wedding Planner",
+  photography: "Photography & Videography",
+  venue: "Wedding Venues",
+  floral: "Decoration & Florist",
+  catering: "Catering Services",
+  makeup: "Makeup & Styling",
+  fashion: "Wedding Fashion",
+  music: "Music & Entertainment",
+  planner: "Wedding Planner",
 };
 
 /** Uploads a single File to ImgBB and returns the hosted image URL. */
@@ -84,7 +84,7 @@ interface PreviewFile {
 
 export default function VendorAddServicePage() {
   const [title, setTitle] = React.useState("");
-  const [category, setCategory] = React.useState<IServiceCategory>("Photography");
+  const [category, setCategory] = React.useState<IServiceCategory>("photography");
   const [price, setPrice] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [previews, setPreviews] = React.useState<PreviewFile[]>([]);
@@ -191,6 +191,7 @@ export default function VendorAddServicePage() {
         vendorId: userId,
         vendorEmail: userEmail,
         status: "Pending", // New services start as Pending for admin review
+        vendorName: session?.user?.name || undefined,
       });
       // setStatus("success");
       toast.add({
@@ -200,7 +201,7 @@ export default function VendorAddServicePage() {
       });
       // Reset form
       setTitle("");
-      setCategory("Photography");
+      setCategory("photography");
       setPrice("");
       setDescription("");
       previews.forEach((p) => URL.revokeObjectURL(p.previewUrl));
