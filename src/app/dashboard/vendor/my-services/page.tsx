@@ -63,7 +63,7 @@ export default function VendorMyServicesPage() {
             Manage your active wedding packages, pricing, and directory availability
           </p>
         </div>
-        <Button asChild className="bg-[#99616E] hover:bg-[#824E5B] text-white">
+        <Button className="bg-[#99616E] hover:bg-[#824E5B] text-white">
           <Link href="/dashboard/vendor/add-service" className="gap-2">
             <PlusCircle className="size-4" />
             <span>Add New Service</span>

@@ -38,11 +38,13 @@ export default function VendorAddServicePage() {
     <div className="max-w-3xl space-y-6">
       {/* Page Title & Back Nav */}
       <div className="flex items-center gap-3 pb-2 border-b border-border">
-        <Button variant="ghost" size="icon-sm" asChild>
-          <Link href="/dashboard/vendor/my-services">
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
+        <Link
+          href="/dashboard/vendor/my-services"
+          aria-label="Back to my services"
+          className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          <ArrowLeft className="size-4" />
+        </Link>
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Add New Wedding Service
@@ -145,9 +147,12 @@ export default function VendorAddServicePage() {
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-              <Button variant="outline" type="button" asChild>
-                <Link href="/dashboard/vendor/my-services">Cancel</Link>
-              </Button>
+              <Link
+                href="/dashboard/vendor/my-services"
+                className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                Cancel
+              </Link>
               <Button type="submit" className="bg-[#99616E] hover:bg-[#824E5B] text-white">
                 <PlusCircle className="size-4 mr-2" />
                 Publish Service
