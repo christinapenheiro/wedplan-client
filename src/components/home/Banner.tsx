@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 /**
  * Curated wedding imagery collection provided for the moving banner showcase.
@@ -190,7 +190,7 @@ export default function Banner() {
       </div>
 
       {/* Center Hero Heading & Call to Action */}
-      <div className="relative max-w-4xl mx-auto px-4 text-center z-10 mb-12 sm:mb-16">
+      <div className="relative max-w-4xl mx-auto px-4 text-center mb-12 sm:mb-16">
         
         {/* Elegant Cursive Script Subtitle (matches reference "A wedding photography") */}
         <p className="font-serif italic text-2xl sm:text-3xl text-[#99616E] dark:text-[#C4B6D0] font-light mb-2.5 tracking-wide">

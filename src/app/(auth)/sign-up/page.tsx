@@ -31,8 +31,9 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
+import { IAccountRole } from "@/lib/types";
 
-type AccountRole = "Customer" | "Vendor";
+
 
 /**
  * Uploads an image file to the ImgBB hosting service via its public REST API.
@@ -75,7 +76,7 @@ export default function SignUpPage() {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [role, setRole] = React.useState<AccountRole>("Customer");
+  const [role, setRole] = React.useState<IAccountRole>("Customer");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
 
