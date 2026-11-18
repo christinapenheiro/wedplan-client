@@ -1,4 +1,7 @@
-export type IAccountRole = "customer" | "vendor" | "admin";
+export type IAccountRole =
+  | "customer"
+  | "vendor"
+  | "admin";
 
 export type IServiceCategory =
   | "photography"
@@ -33,4 +36,27 @@ export interface IService extends IAddServiceForm {
   status: "active" | "pending" | "declined";
   /** Vendor-controlled booking availability; missing on legacy records means available. */
   isAvailable?: boolean;
+}
+
+/** Fields collected from the booking request form */
+export interface IBookingFormData {
+  eventDate: string;
+  eventLocation: string;
+  additionalMessage: string;
+  customerName?: string;
+  customerEmail?: string;
+}
+
+/** Complete booking payload combining service info and customer submission */
+export interface IBookingPayload extends IBookingFormData {
+  serviceId: string;
+  serviceTitle: string;
+  serviceLocation?: string;
+  vendorId: string;
+  vendorEmail: string;
+  vendorName?: string;
+  customerId?: string;
+  customerRole?: IAccountRole;
+  status: "Pending" | "Accepted" | "Declined";
+  createdAt: string;
 }

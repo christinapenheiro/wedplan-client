@@ -76,7 +76,7 @@ export default function SignUpPage() {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [role, setRole] = React.useState<IAccountRole>("Customer");
+  const [role, setRole] = React.useState<IAccountRole>("customer");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
 
@@ -329,16 +329,16 @@ export default function SignUpPage() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setRole("Customer")}
+                  onClick={() => setRole("customer")}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
-                    role === "Customer"
+                    role === "customer"
                       ? "border-[#99616E] bg-[#99616E]/10 ring-2 ring-[#99616E]/30 text-[#2A1F25] dark:text-[#F5EFF3]"
                       : "border-[#D2D3D0] dark:border-[#423940] hover:border-[#C4B6D0] hover:bg-[#F2EEF3]/60 dark:hover:bg-[#2E252C] text-[#756770]"
                   }`}
                 >
                   <HeartHandshake
                     className={`size-5 mb-1 ${
-                      role === "Customer" ? "text-[#99616E]" : "text-[#756770]"
+                      role === "customer" ? "text-[#99616E]" : "text-[#756770]"
                     }`}
                   />
                   <span className="font-semibold text-sm">Customer</span>
@@ -349,16 +349,16 @@ export default function SignUpPage() {
 
                 <button
                   type="button"
-                  onClick={() => setRole("Vendor")}
+                  onClick={() => setRole("vendor")}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
-                    role === "Vendor"
+                    role === "vendor"
                       ? "border-[#99616E] bg-[#99616E]/10 ring-2 ring-[#99616E]/30 text-[#2A1F25] dark:text-[#F5EFF3]"
                       : "border-[#D2D3D0] dark:border-[#423940] hover:border-[#C4B6D0] hover:bg-[#F2EEF3]/60 dark:hover:bg-[#2E252C] text-[#756770]"
                   }`}
                 >
                   <Store
                     className={`size-5 mb-1 ${
-                      role === "Vendor" ? "text-[#99616E]" : "text-[#756770]"
+                      role === "vendor" ? "text-[#99616E]" : "text-[#756770]"
                     }`}
                   />
                   <span className="font-semibold text-sm">Vendor</span>

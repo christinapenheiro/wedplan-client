@@ -367,6 +367,7 @@ export default async function ServiceDetailsPage({
         {/* Booking */}
         <aside className="lg:sticky lg:top-24">
           <BookingPanel
+            serviceId={id}
             serviceTitle={service.title}
             priceLabel={formatPrice(service.price)}
             vendorEmail={service.vendorEmail}

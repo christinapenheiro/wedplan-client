@@ -79,7 +79,7 @@ export default function Navbar() {
   // Base navigation links always visible to visitors
   const publicNavLinks = [
     { label: "Home", href: "/" },
-    { label: "Browse", href: "/browse" },
+    { label: "Browse", href: "/browse-services" },
     { label: "Services", href: "/services" },
   ];
 
