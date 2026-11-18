@@ -43,7 +43,7 @@ async function uploadToImgBB(file: File): Promise<string> {
   const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
   if (!apiKey) {
     throw new Error(
-      "ImgBB API key is missing. Please set NEXT_PUBLIC_IMGBB_API_KEY in your .env file, or proceed without an image."
+      "ImgBB API key is missing. Please set NEXT_PUBLIC_IMGBB_API_KEY in your .env file, or proceed without an image.",
     );
   }
 
@@ -84,7 +84,9 @@ export default function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null,
+  );
 
   // Real-time password requirement evaluations
   const hasMinLength = password.length >= 6;
@@ -153,7 +155,9 @@ export default function SignUpPage() {
     }
 
     if (!isPasswordValid) {
-      setErrorMessage("Please satisfy all password requirements before proceeding.");
+      setErrorMessage(
+        "Please satisfy all password requirements before proceeding.",
+      );
       return;
     }
 
@@ -175,24 +179,31 @@ export default function SignUpPage() {
         role,
       };
 
-      const { error } = await authClient.signUp.email(
-        signUpPayload as Parameters<typeof authClient.signUp.email>[0] & { role: AccountRole }
+      const { data, error } = await authClient.signUp.email(
+        // signUpPayload as Parameters<typeof authClient.signUp.email>[0] & { role: AccountRole }
+        signUpPayload,
       );
 
+      console.log(data, error);
+
       if (error) {
-        setErrorMessage(error.message || "Registration failed. Please try again.");
+        setErrorMessage(
+          error.message || "Registration failed. Please try again.",
+        );
         setIsSubmitting(false);
         return;
       }
 
       setSuccessMessage("Account created successfully! Redirecting to home...");
-      
+
       setTimeout(() => {
         router.push("/");
       }, 1200);
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "An unexpected error occurred during sign up.";
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred during sign up.";
       setErrorMessage(message);
       setIsSubmitting(false);
     }
@@ -213,7 +224,9 @@ export default function SignUpPage() {
       });
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : "Failed to initialize Google authentication.";
+        err instanceof Error
+          ? err.message
+          : "Failed to initialize Google authentication.";
       setErrorMessage(message);
       setIsGoogleLoading(false);
     }

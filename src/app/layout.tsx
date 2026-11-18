@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
+import Navbar from "@/components/shared/Navbar";
 import "./globals.css";
 
 const lato = Lato({
@@ -18,7 +19,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${lato.variable} ${lato.className}`}>
       <body className="min-h-full flex flex-col font-sans antialiased">
-        {children}
+        <Navbar />
+        <main className="flex-1">{children}</main>
       </body>
     </html>
   );

@@ -9,20 +9,6 @@ const db = client.db("wedplan");
 // const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db, {
-    client,
-  }),
-  user: {
-    additionalFields: {
-      role: {
-        type: "string",
-        required: false,
-        defaultValue: "Customer",
-        input: true,
-      },
-    },
-  },
-
   emailAndPassword: {
     enabled: true,
     // sendResetPassword: async ({ user, url, token }, request) => {
@@ -39,12 +25,25 @@ export const auth = betterAuth({
     //   }
     // },
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "Customer",
+        input: true,
+      },
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+  database: mongodbAdapter(db, {
+    client,
+  }),
   plugins: [jwt()],
   session: {
     cookieCache: {
