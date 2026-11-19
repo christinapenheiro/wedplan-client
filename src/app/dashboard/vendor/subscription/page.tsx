@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import {
   Card,
   CardHeader,
@@ -10,13 +11,16 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "@/components/ui/toast";
 import {
   ArrowRight,
   BadgeCheck,
   Check,
   Crown,
+  Loader2,
   Sparkles,
 } from "lucide-react";
+import { clientApi } from "@/lib/api/clientApi";
 
 const FREE_FEATURES = [
   "Add up to 3 services",
@@ -34,6 +38,7 @@ const PREMIUM_FEATURES = [
 
 export default function VendorSubscriptionPage() {
   const { data: session } = authClient.useSession();
+  const [isUpgrading, setIsUpgrading] = React.useState(false);
 
   // The account is created on the Free plan, so anything other than "premium"
   // (including a still-loading session) falls back to Free.
@@ -42,6 +47,47 @@ export default function VendorSubscriptionPage() {
       ?.subscriptionPlan ?? "Free"
   ).toLowerCase();
   const isPremium = plan === "premium";
+
+  const handleUpgradePremium = async () => {
+    if (!session?.user) {
+      toast.add({
+        title: "Authentication Required",
+        description: "Please sign in to upgrade your subscription.",
+        type: "warning",
+      });
+      return;
+    }
+
+    setIsUpgrading(true);
+
+    try {
+      const res = await clientApi.post<{ success: boolean; url?: string }>(
+        "/create-checkout-session",
+        {
+          id: session.user.id,
+          email: session.user.email,
+        }
+      );
+
+      // Handle success redirect to Stripe Checkout URL
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        throw new Error("Checkout URL was not returned by the server.");
+      }
+    } catch (error) {
+      console.error("Failed to create checkout session:", error);
+      toast.add({
+        title: "Checkout Failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Could not initiate payment. Please try again.",
+        type: "error",
+      });
+      setIsUpgrading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -207,12 +253,18 @@ export default function VendorSubscriptionPage() {
             <CardFooter className="relative flex-col items-stretch gap-2 border-t border-border pt-5">
               <Button
                 className="group w-full gap-2 bg-gradient-to-r from-primary to-[#B98695] text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-105"
-                disabled={isPremium}
+                disabled={isPremium || isUpgrading}
+                onClick={handleUpgradePremium}
               >
                 {isPremium ? (
                   <>
                     <BadgeCheck className="size-4" />
                     Your current plan
+                  </>
+                ) : isUpgrading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    Redirecting to checkout…
                   </>
                 ) : (
                   <>
