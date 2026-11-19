@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { uploadToImgBB } from "@/lib/imgbb";
 import {
   Eye,
   EyeOff,
@@ -34,40 +35,6 @@ import {
 import { IAccountRole } from "@/lib/types";
 
 
-
-/**
- * Uploads an image file to the ImgBB hosting service via its public REST API.
- * Encodes the binary file into multipart form-data, requests direct hosting,
- * and parses the display URL from the JSON response.
- */
-async function uploadToImgBB(file: File): Promise<string> {
-  const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-  if (!apiKey) {
-    throw new Error(
-      "ImgBB API key is missing. Please set NEXT_PUBLIC_IMGBB_API_KEY in your .env file, or proceed without an image.",
-    );
-  }
-
-  const formData = new FormData();
-  formData.append("image", file);
-
-  const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-    method: "POST",
-    body: formData,
-  });
-
-  const data = (await res.json()) as {
-    success?: boolean;
-    data?: { display_url?: string; url?: string };
-    error?: { message?: string };
-  };
-
-  if (!res.ok || !data.success || !data.data) {
-    throw new Error(data?.error?.message || "Failed to upload image to ImgBB.");
-  }
-
-  return data.data.display_url || data.data.url || "";
-}
 
 export default function SignUpPage() {
   const router = useRouter();
