@@ -46,6 +46,12 @@ export const auth = betterAuth({
         defaultValue: "Free",
         input: false,
       },
+      /** Expiration date for premium subscription (e.g. 90 days). */
+      subscriptionExpiresAt: {
+        type: "date",
+        required: false,
+        input: false,
+      },
       /** Accounts start unblocked; only admins should flip this. */
       isBlocked: {
         type: "boolean",
