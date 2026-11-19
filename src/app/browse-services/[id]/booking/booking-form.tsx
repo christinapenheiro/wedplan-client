@@ -87,7 +87,7 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
         customerName: session?.user?.name || "" ,
         customerId: session?.user?.id,
         // Status metadata
-        status: "Pending",
+        bookingStatus: "Pending",
         createdAt: new Date().toISOString(),
         customerRole:
           (session?.user as { role?: IAccountRole } | undefined)?.role ||

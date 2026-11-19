@@ -132,7 +132,6 @@ const BrowseServicesPage = async () => {
 
   try {
     const res: IService[] = await clientApi.get(`/services?status=active`);
-    console.log(res);
     services = res ?? [];
   } catch (error) {
     hasError = true;

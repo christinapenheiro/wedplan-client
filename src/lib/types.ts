@@ -57,6 +57,6 @@ export interface IBookingPayload extends IBookingFormData {
   vendorName?: string;
   customerId?: string;
   customerRole?: IAccountRole;
-  status: "Pending" | "Accepted" | "Declined";
+  bookingStatus: "Pending" | "Accepted" | "Declined";
   createdAt: string;
 }
