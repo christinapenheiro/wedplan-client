@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   Card,
   CardHeader,
@@ -10,131 +9,225 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Check,
+  Crown,
+  Sparkles,
+} from "lucide-react";
+
+const FREE_FEATURES = [
+  "Add up to 3 services",
+  "Standard vendor listing",
+  "Respond to booking requests",
+  "Basic profile customization",
+];
+
+const PREMIUM_FEATURES = [
+  "Unlimited service listings",
+  "Unlimited active services",
+  "Premium Vendor Badge",
+  "All Free Plan features",
+];
 
 export default function VendorSubscriptionPage() {
-  const tiers = [
-    {
-      name: "Starter",
-      price: "$29",
-      billing: "/month",
-      description: "Ideal for emerging wedding vendors and local specialists",
-      features: [
-        "Up to 3 active service packages",
-        "Direct email client leads",
-        "Standard directory listing",
-        "Basic booking tracker",
-      ],
-      current: false,
-      cta: "Downgrade",
-      variant: "outline" as const,
-    },
-    {
-      name: "Professional",
-      price: "$79",
-      billing: "/month",
-      description: "Our most popular tier for established wedding professionals",
-      features: [
-        "Up to 12 active service packages",
-        "Priority ranking in search directory",
-        "Client messaging & automated quotes",
-        "Verified Vendor Badge",
-        "Full booking & payment analytics",
-      ],
-      current: true,
-      cta: "Current Plan",
-      variant: "default" as const,
-    },
-    {
-      name: "Elite Agency",
-      price: "$149",
-      billing: "/month",
-      description: "For multi-service agencies, luxury venues, and premier planners",
-      features: [
-        "Unlimited service packages",
-        "Homepage featured spot rotation",
-        "Dedicated account manager",
-        "Custom contracts & deposit collection",
-        "Zero platform booking fees",
-      ],
-      current: false,
-      cta: "Upgrade to Elite",
-      variant: "outline" as const,
-    },
-  ];
+  const { data: session } = authClient.useSession();
+
+  // The account is created on the Free plan, so anything other than "premium"
+  // (including a still-loading session) falls back to Free.
+  const plan = String(
+    (session?.user as { subscriptionPlan?: string } | undefined)
+      ?.subscriptionPlan ?? "Free"
+  ).toLowerCase();
+  const isPremium = plan === "premium";
 
   return (
-    <div className="space-y-6">
-      <div className="pb-2 border-b border-border">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Subscription & Membership
-        </h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Select the membership tier that fits your wedding vendor business goals
+    <div className="space-y-8">
+      {/* Page header */}
+      <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              Subscription & Membership
+            </h1>
+            <span className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              <Sparkles className="size-3" />
+              Plans
+            </span>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Choose the plan that matches how many services you offer your
+            couples.
+          </p>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          You are currently on the{" "}
+          <span className="font-semibold text-foreground">
+            {isPremium ? "Premium" : "Free"}
+          </span>{" "}
+          plan.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {tiers.map((tier) => (
-          <Card
-            key={tier.name}
-            className={`flex flex-col justify-between border ${
-              tier.current
-                ? "border-[#99616E] ring-2 ring-[#99616E]/20 bg-gradient-to-b from-[#99616E]/5 to-transparent"
-                : "border-border"
+      <div className="grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2 md:items-stretch">
+        {/* Free plan */}
+        <Card
+          className={`relative flex h-full flex-col overflow-hidden rounded-2xl bg-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
+            isPremium
+              ? "border-border"
+              : "border-primary/40 shadow-md shadow-primary/5 ring-1 ring-primary/10"
+          }`}
+        >
+          <div
+            className={`absolute inset-x-0 top-0 h-1 ${
+              isPremium
+                ? "bg-border"
+                : "bg-gradient-to-r from-primary/30 via-primary to-primary/30"
             }`}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">{tier.name}</CardTitle>
-                {tier.current && (
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#99616E] text-white">
-                    Active
-                  </span>
-                )}
+          />
+
+          <CardHeader className="pt-7">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex size-12 items-center justify-center rounded-2xl border border-secondary/50 bg-secondary/20 text-primary">
+                <Sparkles className="size-5" />
               </div>
-              <CardDescription className="text-xs mt-1">
-                {tier.description}
-              </CardDescription>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold text-foreground">
-                  {tier.price}
+              {!isPremium && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
+                  <Check className="size-3" />
+                  Current plan
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {tier.billing}
+              )}
+            </div>
+
+            <CardTitle className="mt-5 text-xl font-bold">Free</CardTitle>
+            <CardDescription>
+              Everything you need to start booking your first couples.
+            </CardDescription>
+
+            <div className="mt-5 flex items-baseline gap-1.5">
+              <span className="text-4xl font-extrabold tracking-tight text-foreground">
+                $0
+              </span>
+              <span className="text-sm font-medium text-muted-foreground">
+                / forever
+              </span>
+            </div>
+          </CardHeader>
+
+          <CardContent className="flex-1 space-y-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              What&apos;s included
+            </p>
+            <ul className="space-y-3 text-sm">
+              {FREE_FEATURES.map((feature) => (
+                <li key={feature} className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Check className="size-3" />
+                  </span>
+                  <span className="text-muted-foreground">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+
+          <CardFooter className="border-t border-border pt-5">
+            <Button
+              variant="outline"
+              className="w-full gap-2 border-border hover:border-primary/40 hover:text-primary"
+              disabled={!isPremium}
+            >
+              {!isPremium ? (
+                <>
+                  <Check className="size-4" />
+                  Your current plan
+                </>
+              ) : (
+                "Switch to Free"
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
+
+        {/* Premium plan */}
+        <div className="relative isolate rounded-3xl bg-gradient-to-br from-primary via-secondary to-primary p-[1.5px] shadow-xl shadow-primary/15">
+          <div className="pointer-events-none absolute -inset-3 -z-10 rounded-[2rem] bg-primary/20 blur-2xl" />
+
+          <Card className="relative flex h-full flex-col overflow-hidden rounded-[calc(1.5rem-1.5px)] border-0 bg-card">
+            <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
+            <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-secondary/20 blur-3xl" />
+
+            <CardHeader className="relative pt-7">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#B98695] text-primary-foreground shadow-lg shadow-primary/25">
+                  <Crown className="size-5" />
+                </div>
+                <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-primary to-[#B98695] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-sm">
+                  <Crown className="size-3" />
+                  Most popular
+                </span>
+              </div>
+
+              <CardTitle className="mt-5 flex items-center gap-2 text-xl font-bold">
+                Premium
+              </CardTitle>
+              <CardDescription>
+                Unlimited reach for vendors ready to grow their business.
+              </CardDescription>
+
+              <div className="mt-5 flex items-baseline gap-1.5">
+                <span className="text-4xl font-extrabold tracking-tight text-foreground">
+                  $99
+                </span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  / month
                 </span>
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-2.5">
-              <span className="text-xs font-semibold text-foreground uppercase tracking-wider block">
-                Features included:
-              </span>
-              <ul className="space-y-2 text-xs text-muted-foreground">
-                {tier.features.map((feat) => (
-                  <li key={feat} className="flex items-center gap-2">
-                    <CheckCircle2 className="size-3.5 text-[#99616E] shrink-0" />
-                    <span>{feat}</span>
+            <CardContent className="relative flex-1 space-y-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Everything in Premium
+              </p>
+              <ul className="space-y-3 text-sm">
+                {PREMIUM_FEATURES.map((feature) => (
+                  <li key={feature} className="flex items-start gap-2.5">
+                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                      <Check className="size-3" />
+                    </span>
+                    <span className="font-medium text-foreground">
+                      {feature}
+                    </span>
                   </li>
                 ))}
               </ul>
             </CardContent>
 
-            <CardFooter className="pt-4 border-t border-border">
+            <CardFooter className="relative flex-col items-stretch gap-2 border-t border-border pt-5">
               <Button
-                variant={tier.current ? "default" : "outline"}
-                className={`w-full text-xs font-semibold ${
-                  tier.current
-                    ? "bg-[#99616E] hover:bg-[#824E5B] text-white"
-                    : "border-border hover:border-[#99616E]"
-                }`}
-                disabled={tier.current}
+                className="group w-full gap-2 bg-gradient-to-r from-primary to-[#B98695] text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-105"
+                disabled={isPremium}
               >
-                {tier.cta}
+                {isPremium ? (
+                  <>
+                    <BadgeCheck className="size-4" />
+                    Your current plan
+                  </>
+                ) : (
+                  <>
+                    <Crown className="size-4" />
+                    Upgrade to Premium
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </>
+                )}
               </Button>
+              <p className="text-center text-[10px] text-muted-foreground">
+                Cancel anytime · No hidden fees
+              </p>
             </CardFooter>
           </Card>
-        ))}
+        </div>
       </div>
     </div>
   );
