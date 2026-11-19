@@ -44,6 +44,7 @@ export default function SignUpPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [role, setRole] = React.useState<IAccountRole>("customer");
+  const [businessName, setBusinessName] = React.useState("");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
 
@@ -117,6 +118,11 @@ export default function SignUpPage() {
       return;
     }
 
+    if (role === "vendor" && !businessName.trim()) {
+      setErrorMessage("Please provide your business name.");
+      return;
+    }
+
     if (!email.trim()) {
       setErrorMessage("Please provide a valid email address.");
       return;
@@ -145,6 +151,9 @@ export default function SignUpPage() {
         image: uploadedImageUrl,
         callbackURL: "/",
         role,
+        ...(role === "vendor"
+          ? { businessName: businessName.trim() }
+          : {}),
       };
 
       const { data, error } = await authClient.signUp.email(
@@ -335,6 +344,26 @@ export default function SignUpPage() {
                 </button>
               </div>
             </div>
+
+            {/* Business Name — vendors only */}
+            {role === "vendor" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="businessName">Business Name</Label>
+                <div className="relative">
+                  <Store className="absolute left-3 top-2.5 size-4 text-[#756770]" />
+                  <Input
+                    id="businessName"
+                    type="text"
+                    placeholder="e.g. Blush & Petal Co."
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    className="pl-9 border-[#D2D3D0] dark:border-[#423940] focus-visible:border-[#99616E] focus-visible:ring-[#99616E]/30"
+                    required
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Full Name */}
             <div className="space-y-1.5">

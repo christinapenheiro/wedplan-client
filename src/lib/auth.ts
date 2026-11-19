@@ -33,6 +33,26 @@ export const auth = betterAuth({
         defaultValue: "customer",
         input: true,
       },
+      /** Vendors supply the public business name at sign-up; customers leave it empty. */
+      businessName: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      /** Default plan; not user-editable at registration. */
+      subscriptionPlan: {
+        type: ["Free","Premium"],
+        required: false,
+        defaultValue: "Free",
+        input: false,
+      },
+      /** Accounts start unblocked; only admins should flip this. */
+      isBlocked: {
+        type: "boolean",
+        required: false,
+        defaultValue: false,
+        input: false,
+      },
     },
   },
   socialProviders: {
