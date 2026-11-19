@@ -15,6 +15,35 @@ interface BookingPanelProps {
   available: boolean;
 }
 
+type BookingStatus = "Pending" | "Accepted" | "Declined";
+
+/** Booking document as returned by the API — payload plus the Mongo-side `status`. */
+interface IBookingRecord extends IBookingPayload {
+  status?: string;
+}
+
+/**
+ * Normalises the booking status from the API. The stored values are capitalised
+ * ("Pending", "Accepted", "Declined"), so comparing them directly to lowercase
+ * strings silently fails. Unknown/missing values mean there is no active request.
+ */
+function getBookingStatus(
+  booking: IBookingRecord | IBookingRecord[] | null | undefined
+): BookingStatus | null {
+  const record = Array.isArray(booking) ? booking[0] : booking;
+  const raw = record?.bookingStatus ?? record?.status;
+
+  if (!raw) return null;
+
+  const normalized = String(raw).toLowerCase();
+
+  if (normalized === "pending") return "Pending";
+  if (normalized === "accepted") return "Accepted";
+  if (normalized === "declined") return "Declined";
+
+  return null;
+}
+
 /**
  * Booking side panel on the service details page. Directs the user to the dedicated
  * booking request form page for this service.
@@ -27,24 +56,39 @@ export default function BookingPanel({
 }: BookingPanelProps) {
   const targetHref = serviceId ? `/browse-services/${serviceId}/booking` : "#";
   const { data: session } = authClient.useSession();
-  const [bookingStatus, setBookingStatus] = useState<string | null>(null);
+  const [bookingStatus, setBookingStatus] = useState<BookingStatus | null>(null);
 
   useEffect(() => {
-    const getBookingInfo = async () => {
+    const userId = session?.user?.id;
+    if (!userId || !serviceId) return;
+
+    let cancelled = false;
+
+    (async () => {
+      // Clear any status belonging to a previously viewed service.
+      setBookingStatus(null);
+
       try {
-        const bookingInfo: IBookingPayload = await clientApi.get(
-          `/bookings?customerId=${session?.user?.id}&serviceId=${serviceId}`,
+        const bookingInfo = await clientApi.get<
+          IBookingRecord | IBookingRecord[] | null
+        >(
+          `/bookings?customerId=${encodeURIComponent(
+            userId
+          )}&serviceId=${encodeURIComponent(serviceId)}`
         );
 
-        setBookingStatus(bookingInfo?.bookingStatus ?? null);
+        if (cancelled) return;
+
+        setBookingStatus(getBookingStatus(bookingInfo));
       } catch (error) {
+        if (cancelled) return;
         console.error(error);
       }
-    };
+    })();
 
-    if (session?.user?.id && serviceId) {
-      getBookingInfo();
-    }
+    return () => {
+      cancelled = true;
+    };
   }, [session?.user?.id, serviceId]);
 
   return (
@@ -89,15 +133,7 @@ export default function BookingPanel({
           quote.
         </p>
 
-        {available && !bookingStatus ? (
-          <Link
-            href={targetHref}
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <Sparkles className="size-4" />
-            Request booking
-          </Link>
-        ) : bookingStatus === "pending" ? (
+        {bookingStatus === "Pending" ? (
           <span
             aria-disabled="true"
             className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
@@ -111,6 +147,13 @@ export default function BookingPanel({
           >
             Booking Accepted
           </span>
+        ) : bookingStatus === "Declined" ? (
+          <span
+            aria-disabled="true"
+            className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            Booking Declined
+          </span>
         ) : !available ? (
           <span
             aria-disabled="true"
@@ -118,14 +161,15 @@ export default function BookingPanel({
           >
             Service Unavailable
           </span>
-        ) : bookingStatus === "Declined" ? (
-          <span
-            aria-disabled="true"
-            className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+        ) : (
+          <Link
+            href={targetHref}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            Service Unavailable
-          </span>
-        ) : null}
+            <Sparkles className="size-4" />
+            Request booking
+          </Link>
+        )}
 
         <div className="flex items-center justify-center gap-1.5 border-t border-border pt-4 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
           <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />

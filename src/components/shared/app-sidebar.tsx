@@ -283,12 +283,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={<Link href="/browse" />}
+                  render={<Link href="/browse-services" />}
                   tooltip="Browse Services"
                   className="gap-3 rounded-lg px-2.5 py-2 text-sm text-foreground hover:bg-[#F2EEF3] dark:hover:bg-[#2A2328]"
                 >
                   <Sparkles className="size-4.5 shrink-0 text-muted-foreground" />
-                  <span>Browse Directory</span>
+                  <span>Browse Services</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
