@@ -182,7 +182,7 @@ export default function VendorAddServicePage() {
     setSubmitting(true);
     // console.log("Submitting service:", { title, category, price, description, imageUrls });
     try {
-      await clientApi.post<IService>("/services", {
+      await clientApi.post<IService>("/services",session?.session?.token as string, {
         title,
         category,
         price: Number(price),

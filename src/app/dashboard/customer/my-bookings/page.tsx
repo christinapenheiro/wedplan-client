@@ -200,6 +200,7 @@ export default function CustomerMyBookingsPage() {
   const [deleting, setDeleting] = React.useState(false);
 
   const userId = session?.user?.id;
+    const token = session?.session?.token;
 
   React.useEffect(() => {
     if (sessionLoading || !userId) return;
@@ -214,7 +215,7 @@ export default function CustomerMyBookingsPage() {
       try {
         const response = await clientApi.get<
           IBookingRecord | IBookingRecord[] | null
-        >(`/bookings?customerId=${encodeURIComponent(userId)}`);
+        >(`/bookings?customerId=${encodeURIComponent(userId)}`,session?.session?.token);
 
         if (cancelled) return;
 
@@ -229,7 +230,7 @@ export default function CustomerMyBookingsPage() {
         if (serviceIds.length === 0) return;
 
         const results = await Promise.allSettled(
-          serviceIds.map((id) => clientApi.get<IService>(`/services/${id}`))
+          serviceIds.map((id) => clientApi.get<IService>(`/services/${id}`,session?.session?.token))
         );
 
         if (cancelled) return;
@@ -273,7 +274,7 @@ export default function CustomerMyBookingsPage() {
     try {
       await clientApi.delete<{ success: boolean; deletedId: string }>(
         `/bookings/${booking._id}`
-      );
+      ,token as string);
 
       setBookings((prev) =>
         prev.filter((item) => item._id !== booking._id)

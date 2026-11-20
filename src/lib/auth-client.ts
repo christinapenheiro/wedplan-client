@@ -1,11 +1,31 @@
 // import { createAuthClient } from "better-auth/react";
-// import { jwtClient } from "better-auth/client/plugins";
+
 // export const authClient = createAuthClient({
 //   plugins: [jwtClient()],
 // });
+import { adminClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { inferAdditionalFields } from "better-auth/client/plugins";
+import { jwtClient } from "better-auth/client/plugins";
+
+
+
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_CLIENT_URL,
+  plugins: [
+    inferAdditionalFields({
+      user: {
+        accountType: {
+          type: "string",
+        },
+        // businessName: {
+        //   type: "string",
+        // }
+      },
+    }),
+    adminClient(),
+    jwtClient(),
+  ],
 });
 
 

@@ -43,7 +43,7 @@ export default function SignUpPage() {
   const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [role, setRole] = React.useState<IAccountRole>("customer");
+  const [accountType, setAccountType] = React.useState<IAccountRole>("customer");
   const [businessName, setBusinessName] = React.useState("");
   const [imageFile, setImageFile] = React.useState<File | null>(null);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
@@ -118,7 +118,7 @@ export default function SignUpPage() {
       return;
     }
 
-    if (role === "vendor" && !businessName.trim()) {
+    if (accountType === "vendor" && !businessName.trim()) {
       setErrorMessage("Please provide your business name.");
       return;
     }
@@ -150,8 +150,8 @@ export default function SignUpPage() {
         password,
         image: uploadedImageUrl,
         callbackURL: "/",
-        role,
-        ...(role === "vendor"
+        accountType,
+        ...(accountType === "vendor"
           ? { businessName: businessName.trim() }
           : {}),
       };
@@ -305,16 +305,16 @@ export default function SignUpPage() {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setRole("customer")}
+                  onClick={() => setAccountType("customer")}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
-                    role === "customer"
+                    accountType === "customer"
                       ? "border-[#99616E] bg-[#99616E]/10 ring-2 ring-[#99616E]/30 text-[#2A1F25] dark:text-[#F5EFF3]"
                       : "border-[#D2D3D0] dark:border-[#423940] hover:border-[#C4B6D0] hover:bg-[#F2EEF3]/60 dark:hover:bg-[#2E252C] text-[#756770]"
                   }`}
                 >
                   <HeartHandshake
                     className={`size-5 mb-1 ${
-                      role === "customer" ? "text-[#99616E]" : "text-[#756770]"
+                      accountType === "customer" ? "text-[#99616E]" : "text-[#756770]"
                     }`}
                   />
                   <span className="font-semibold text-sm">Customer</span>
@@ -325,16 +325,16 @@ export default function SignUpPage() {
 
                 <button
                   type="button"
-                  onClick={() => setRole("vendor")}
+                  onClick={() => setAccountType("vendor")}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
-                    role === "vendor"
+                    accountType === "vendor"
                       ? "border-[#99616E] bg-[#99616E]/10 ring-2 ring-[#99616E]/30 text-[#2A1F25] dark:text-[#F5EFF3]"
                       : "border-[#D2D3D0] dark:border-[#423940] hover:border-[#C4B6D0] hover:bg-[#F2EEF3]/60 dark:hover:bg-[#2E252C] text-[#756770]"
                   }`}
                 >
                   <Store
                     className={`size-5 mb-1 ${
-                      role === "vendor" ? "text-[#99616E]" : "text-[#756770]"
+                      accountType === "vendor" ? "text-[#99616E]" : "text-[#756770]"
                     }`}
                   />
                   <span className="font-semibold text-sm">Vendor</span>
@@ -346,7 +346,7 @@ export default function SignUpPage() {
             </div>
 
             {/* Business Name — vendors only */}
-            {role === "vendor" && (
+            {accountType === "vendor" && (
               <div className="space-y-1.5">
                 <Label htmlFor="businessName">Business Name</Label>
                 <div className="relative">

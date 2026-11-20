@@ -12,12 +12,14 @@ interface DashboardShellProps {
   children: React.ReactNode;
   roleName: string;
   userName: string;
+  accountName: string;
 }
 
 export default function DashboardShell({
   children,
   roleName,
   userName,
+  accountName,
 }: DashboardShellProps) {
   return (
     <SidebarProvider>
@@ -32,7 +34,7 @@ export default function DashboardShell({
             <div className="flex items-center gap-2 text-sm">
               <span className="font-semibold">Dashboard</span>
               <span className="text-muted-foreground">/</span>
-              <span className="capitalize">{roleName}</span>
+              <span className="capitalize">{`${roleName=== "admin" ? "Admin" : accountName}`}</span>
             </div>
           </div>
 

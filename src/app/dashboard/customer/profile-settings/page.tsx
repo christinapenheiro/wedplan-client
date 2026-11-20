@@ -45,7 +45,7 @@ export default function CustomerProfileSettingsPage() {
   } = authClient.useSession();
 
   const user = session?.user;
-  const role = ((user as { role?: IAccountRole } | undefined)?.role ??
+  const role = ((user as { accountType?: IAccountRole } | undefined)?.accountType ??
     "customer") as IAccountRole;
   const router = useRouter()
 

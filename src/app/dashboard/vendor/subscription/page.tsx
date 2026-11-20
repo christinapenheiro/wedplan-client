@@ -38,6 +38,7 @@ const PREMIUM_FEATURES = [
 
 export default function VendorSubscriptionPage() {
   const { data: session } = authClient.useSession();
+  const token = session?.session?.token;
   const [isUpgrading, setIsUpgrading] = React.useState(false);
 
   // The account is created on the Free plan, so anything other than "premium"
@@ -63,6 +64,7 @@ export default function VendorSubscriptionPage() {
     try {
       const res = await clientApi.post<{ success: boolean; url?: string }>(
         "/create-checkout-session",
+        token as string,
         {
           id: session.user.id,
           email: session.user.email,

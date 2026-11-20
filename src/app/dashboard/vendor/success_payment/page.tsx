@@ -13,11 +13,14 @@ import {
   Loader2,
 } from "lucide-react";
 import { clientApi } from "@/lib/api/clientApi";
+import { authClient } from "@/lib/auth-client";
 
 function SuccessPaymentContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [isVerifying, setIsVerifying] = React.useState(Boolean(sessionId));
+  const { data: session } = authClient.useSession();
+  const token = session?.session?.token;
 
   React.useEffect(() => {
     if (!sessionId) return;
@@ -25,7 +28,7 @@ function SuccessPaymentContent() {
     let isMounted = true;
     (async () => {
       try {
-        await clientApi.post("/verify-payment", { sessionId });
+        await clientApi.post("/verify-payment", token as string, { sessionId });
       } catch (err) {
         console.error("Payment verification check:", err);
       } finally {

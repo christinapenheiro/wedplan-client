@@ -24,10 +24,10 @@ export default function DashboardIndexPage() {
         return;
       }
 
-      const role = (session.user as { role?: string })?.role?.toLowerCase();
-      if (role === "admin") {
+      const accountType = (session.user as { accountType?: string })?.accountType?.toLowerCase();
+      if (session.user.role === "admin") {
         router.replace("/dashboard/admin");
-      } else if (role === "vendor") {
+      } else if (accountType === "vendor") {
         router.replace("/dashboard/vendor");
       } else {
         router.replace("/dashboard/customer");

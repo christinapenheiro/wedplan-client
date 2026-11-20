@@ -40,14 +40,15 @@ export default async function DashboardLayout({
 
    const rawRole = (
      session.user as {
-       role?: IAccountRole;
+       accountType?: IAccountRole;
      }
-   ).role;
+   ).accountType?.toLowerCase();
 
    return (
      <DashboardShell
-       roleName={rawRole || "Customer"}
-       userName={session.user.name || session.user.email}
+       accountName={rawRole || "customer"}
+       roleName={session?.user?.role || "user"}
+       userName={session?.user?.name || session?.user?.email}
      >
        {children}
      </DashboardShell>

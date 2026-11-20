@@ -13,6 +13,8 @@ import { clientApi } from "@/lib/api/clientApi";
 import { CATEGORY_META } from "@/lib/service-categories";
 import type { IService, IServiceCategory } from "@/lib/types";
 import BookingForm from "./booking-form";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 interface BookingPageProps {
   params: Promise<{ id: string }>;
@@ -53,10 +55,15 @@ export async function generateMetadata({
   params,
 }: BookingPageProps): Promise<Metadata> {
   const { id } = await params;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const token = session?.session?.token;
 
   try {
     const service = await clientApi.get<IService>(
-      `/services/${encodeURIComponent(id)}`
+      `/services/${encodeURIComponent(id)}`,
+      token as string,
     );
 
     return {
@@ -70,11 +77,14 @@ export async function generateMetadata({
 
 export default async function BookingPage({ params }: BookingPageProps) {
   const { id } = await params;
-
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const token = session?.session?.token;
   let service: IService | null = null;
 
   try {
-    service = await clientApi.get<IService>(`/services/${id}`);
+    service = await clientApi.get<IService>(`/services/${id}`, token as string);
   } catch (error) {
     console.error("Failed to fetch service for booking:", error);
   }
@@ -106,10 +116,12 @@ export default async function BookingPage({ params }: BookingPageProps) {
     );
   }
 
-  const categoryKey = (service.category?.toLowerCase() ?? "planner") as IServiceCategory;
+  const categoryKey = (service.category?.toLowerCase() ??
+    "planner") as IServiceCategory;
   const categoryMeta = CATEGORY_META[categoryKey] ?? CATEGORY_META.planner;
   const CategoryIcon = categoryMeta.icon;
-  const location = service.location?.trim() || "Location provided on confirmation";
+  const location =
+    service.location?.trim() || "Location provided on confirmation";
   const vendorName = getVendorName(service);
   const priceDisplay = formatPrice(service.price);
 
@@ -146,8 +158,8 @@ export default async function BookingPage({ params }: BookingPageProps) {
           </h1>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Complete the form below with your wedding details to request reservation
-            and direct availability confirmation.
+            Complete the form below with your wedding details to request
+            reservation and direct availability confirmation.
           </p>
         </div>
       </header>
@@ -212,8 +224,6 @@ export default async function BookingPage({ params }: BookingPageProps) {
                   </p>
                 )}
               </div>
-
-
 
               {/* What happens next */}
               <div className="mt-6 space-y-3 border-t border-border/70 pt-5">

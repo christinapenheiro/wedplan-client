@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 // import { Resend } from "resend";
-import { jwt } from "better-auth/plugins";
+import { admin, jwt } from "better-auth/plugins";
 
 const client = new MongoClient(process.env.MONGODB_URI as string);
 const db = client.db("wedplan");
@@ -27,8 +27,8 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      role: {
-        type: ["customer", "vendor", "admin"],
+      accountType: {
+        type: ["customer", "vendor"],
         required: false,
         defaultValue: "customer",
         input: true,
@@ -70,7 +70,14 @@ export const auth = betterAuth({
   database: mongodbAdapter(db, {
     client,
   }),
-  plugins: [jwt()],
+  plugins: [
+    jwt(),
+  admin(
+    {
+      defaultRole: "user"
+    }
+  ),
+],
   session: {
     cookieCache: {
       enabled: true,

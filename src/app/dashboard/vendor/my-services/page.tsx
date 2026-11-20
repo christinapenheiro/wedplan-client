@@ -98,8 +98,8 @@ const STATUS_FILTERS: ("All" | ServiceStatus)[] = [
 
 /** Normalises a stored status — records saved without one are treated as awaiting review. */
 function getStatus(service: IService): ServiceStatus {
-  if (service.status === "active") return "active";
-  if (service.status === "declined") return "declined";
+  if (service.status === "Active") return "active";
+  if (service.status === "Declined") return "declined";
   return "pending";
 }
 
@@ -189,6 +189,7 @@ export default function VendorMyServicesPage() {
     : null;
 
   const userId = session?.user?.id;
+  const token = session?.session?.token;
 
   /** Loads every service then keeps only the ones owned by the signed-in vendor. */
   React.useEffect(() => {
@@ -203,7 +204,7 @@ export default function VendorMyServicesPage() {
       try {
         const all = await clientApi.get<IService[]>(
           `/services?vendorId=${encodeURIComponent(userId)}`
-        );
+        ,token as string);
         if (cancelled) return;
 
         setServices(all.filter((service) => service.vendorId === userId));
@@ -280,7 +281,7 @@ export default function VendorMyServicesPage() {
     );
 
     try {
-      await clientApi.put<IService>(`/services/${service._id}`, {
+      await clientApi.put<IService>(`/services/${service._id}`,token as string, {
         isAvailable: next,
       });
 
@@ -320,7 +321,7 @@ export default function VendorMyServicesPage() {
     try {
       await clientApi.delete<{ success: boolean; deletedId: string }>(
         `/services/${service._id}`
-      );
+      ,token as string);
 
       setServices((prev) => prev.filter((s) => s._id !== service._id));
       setPendingDeleteId(null);
@@ -359,7 +360,7 @@ export default function VendorMyServicesPage() {
     const id = editing._id;
 
     try {
-      const saved = await clientApi.put<IService>(`/services/${id}`, changes);
+      const saved = await clientApi.put<IService>(`/services/${id}`,session?.session?.token as string, changes);
 
       setServices((prev) =>
         prev.map((service) =>

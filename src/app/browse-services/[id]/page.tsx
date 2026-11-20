@@ -17,6 +17,8 @@ import { CATEGORY_META } from "@/lib/service-categories";
 import type { IService } from "@/lib/types";
 import BookingPanel from "./booking-panel";
 import ServiceGallery from "./service-gallery";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 interface ServiceDetailsPageProps {
   params: Promise<{ id: string }>;
@@ -110,11 +112,15 @@ export async function generateMetadata({
   params,
 }: ServiceDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const token = session?.session?.token;
 
   try {
     const service = await clientApi.get<IService>(
       `/services/${encodeURIComponent(id)}`
-    );
+    ,token as string);
 
     return {
       title: `${service.title || "Service"} — WedPlan`,
@@ -129,11 +135,15 @@ export default async function ServiceDetailsPage({
   params,
 }: ServiceDetailsPageProps) {
   const { id } = await params;
+   const session = await auth.api.getSession({
+     headers: await headers(),
+   });
+   const token = session?.session?.token;
 
   let service: IService | null = null;
 
   try {
-    service = await clientApi.get<IService>(`/services/${id}`);
+    service = await clientApi.get<IService>(`/services/${id}`,token as string);
   } catch (error) {
     console.error("Failed to fetch service details:", error);
   }

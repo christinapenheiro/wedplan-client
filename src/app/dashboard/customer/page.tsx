@@ -98,6 +98,7 @@ export default function CustomerDashboardPage() {
   const [reloadKey, setReloadKey] = React.useState(0);
 
   const userId = session?.user?.id;
+  const token = session?.session?.token;
 
   React.useEffect(() => {
     if (sessionLoading || !userId) return;
@@ -111,7 +112,7 @@ export default function CustomerDashboardPage() {
       try {
         const response = await clientApi.get<
           IBookingRecord | IBookingRecord[] | null
-        >(`/bookings?customerId=${encodeURIComponent(userId)}`);
+        >(`/bookings?customerId=${encodeURIComponent(userId)}`,token as string);
 
         if (cancelled) return;
 

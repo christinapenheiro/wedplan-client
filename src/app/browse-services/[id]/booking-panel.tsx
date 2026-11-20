@@ -5,7 +5,7 @@ import { CheckCircle2, Sparkles } from "lucide-react";
 import { clientApi } from "@/lib/api/clientApi";
 import { authClient } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
-import { IBookingPayload } from "@/lib/types";
+import { IBookingPayload, TBookingStatus } from "@/lib/types";
 
 interface BookingPanelProps {
   serviceId?: string;
@@ -15,7 +15,7 @@ interface BookingPanelProps {
   available: boolean;
 }
 
-type BookingStatus = "Pending" | "Accepted" | "Declined";
+
 
 /** Booking document as returned by the API — payload plus the Mongo-side `status`. */
 interface IBookingRecord extends IBookingPayload {
@@ -29,7 +29,7 @@ interface IBookingRecord extends IBookingPayload {
  */
 function getBookingStatus(
   booking: IBookingRecord | IBookingRecord[] | null | undefined
-): BookingStatus | null {
+): TBookingStatus | null {
   const record = Array.isArray(booking) ? booking[0] : booking;
   const raw = record?.bookingStatus ?? record?.status;
 
@@ -56,7 +56,8 @@ export default function BookingPanel({
 }: BookingPanelProps) {
   const targetHref = serviceId ? `/browse-services/${serviceId}/booking` : "#";
   const { data: session } = authClient.useSession();
-  const [bookingStatus, setBookingStatus] = useState<BookingStatus | null>(null);
+  const token = session?.session?.token;
+  const [bookingStatus, setBookingStatus] = useState<TBookingStatus | null>(null);
 
   useEffect(() => {
     const userId = session?.user?.id;
@@ -75,7 +76,7 @@ export default function BookingPanel({
           `/bookings?customerId=${encodeURIComponent(
             userId
           )}&serviceId=${encodeURIComponent(serviceId)}`
-        );
+        ,token as string);
 
         if (cancelled) return;
 

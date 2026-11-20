@@ -80,7 +80,7 @@ export default function Navbar() {
   const publicNavLinks = [
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse-services" },
-    { label: "Services", href: "/services" },
+    { label: "About Us", href: "/about-us" },
   ];
 
   return (

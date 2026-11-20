@@ -35,6 +35,7 @@ interface BookingFormProps {
 export default function BookingForm({ service, vendorName }: BookingFormProps) {
   const router = useRouter();
   const { data:session } = authClient.useSession();
+  const token = session?.session?.token;
 
   // Form input state
   const [eventDate, setEventDate] = React.useState("");
@@ -90,7 +91,7 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
         bookingStatus: "Pending",
         createdAt: new Date().toISOString(),
         customerRole:
-          (session?.user as { role?: IAccountRole } | undefined)?.role ||
+          (session?.user as { accountType?: IAccountRole } | undefined)?.accountType ||
           "customer",
       };
 
@@ -118,7 +119,7 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
        * });
        */
       try {
-        await clientApi.post("/bookings", bookingData);
+        await clientApi.post("/bookings",token as string, bookingData);
       } catch (apiErr) {
         // If the backend endpoint is not yet connected by the user, we log and treat as queued
         console.info(

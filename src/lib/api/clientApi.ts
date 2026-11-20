@@ -2,8 +2,20 @@
  * Central fetch utility for client-side API calls.
  * Reads NEXT_PUBLIC_SERVER_URL from env so callers never hardcode the base URL.
  */
+// import { authClient } from "../auth-client";
+
+
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL ?? "";
+
+//get client session
+
+// async function clientSession() {
+//   const {data: session} = await authClient.getSession()
+//   const token = session?.session?.token
+//   return token
+// }
+
 
 /** Generic request wrapper — throws on non-2xx responses */
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -20,24 +32,43 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const clientApi = {
   /** GET request */
-  get: <T>(path: string) => request<T>(path),
+  get: <T>(path: string, token?: string) =>
+    request<T>(path, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }),
 
   /** POST request with a JSON body */
-  post: <T>(path: string, body: unknown) =>
+  post: <T>(path: string, token: string, body: unknown) =>
     request<T>(path, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     }),
 
   /** PUT request with a JSON body */
-  put: <T>(path: string, body: unknown) =>
+  put: <T>(path: string, token: string, body: unknown) =>
     request<T>(path, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     }),
 
   /** DELETE request */
-  delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
+  delete: <T>(path: string,token:string) =>
+    request<T>(path, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }),
 };

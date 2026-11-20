@@ -125,9 +125,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = authClient.useSession();
 
   // Normalize user role from session metadata, defaulting to Customer
-  const rawRole = (session?.user as { role?: string } | undefined)?.role?.toLowerCase();
+  const rawRole = (session?.user as { accountType?: string } | undefined)?.accountType?.toLowerCase();
+  const userRole = (session?.user as { role?: string } | undefined)?.role?.toLowerCase();
   const role: "vendor" | "customer" | "admin" =
-    rawRole === "admin"
+    userRole === "admin"
       ? "admin"
       : rawRole === "vendor"
       ? "vendor"
