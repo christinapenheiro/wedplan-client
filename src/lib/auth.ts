@@ -41,9 +41,9 @@ export const auth = betterAuth({
       },
       /** Default plan; not user-editable at registration. */
       subscriptionPlan: {
-        type: ["Free","Premium"],
+        type: ["free","premium"],
         required: false,
-        defaultValue: "Free",
+        defaultValue: "free",
         input: false,
       },
       /** Expiration date for premium subscription (e.g. 90 days). */

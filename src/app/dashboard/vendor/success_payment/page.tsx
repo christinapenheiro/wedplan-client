@@ -19,16 +19,24 @@ function SuccessPaymentContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [isVerifying, setIsVerifying] = React.useState(Boolean(sessionId));
-  const { data: session } = authClient.useSession();
+  const { data: session , isPending} = authClient.useSession();
   const token = session?.session?.token;
 
   React.useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || isPending) return;
+
+    // Wait until Better Auth finishes loading.
+    if (!token) {
+      console.error("Authentication token is unavailable.");
+      setIsVerifying(false);
+      return;
+    }
 
     let isMounted = true;
     (async () => {
       try {
-        await clientApi.post("/verify-payment", token as string, { sessionId });
+        const result = await clientApi.post("/verify-payment", token as string, { sessionId });
+        console.log("Payment verification result:", result);
       } catch (err) {
         console.error("Payment verification check:", err);
       } finally {
@@ -41,7 +49,7 @@ function SuccessPaymentContent() {
     return () => {
       isMounted = false;
     };
-  }, [sessionId]);
+  },[sessionId, token, isPending]);
 
   const ninetyDaysFromNow = new Date();
   ninetyDaysFromNow.setDate(ninetyDaysFromNow.getDate() + 90);

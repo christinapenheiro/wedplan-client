@@ -26,7 +26,7 @@ export default function VendorBookingRequestsPage() {
       date: "October 14, 2026",
       guestCount: "140 Guests",
       venue: "Meadow View Estate",
-      status: "Pending",
+      status: "pending",
       notes: "Looking for blush, berry, and eucalyptus florals for evening ceremony.",
     },
     {
@@ -37,7 +37,7 @@ export default function VendorBookingRequestsPage() {
       date: "November 02, 2026",
       guestCount: "90 Guests",
       venue: "Grand Pavilion",
-      status: "Pending",
+      status: "pending",
       notes: "Need coverage starting from bridal prep till sparkler exit.",
     },
     {
@@ -48,12 +48,12 @@ export default function VendorBookingRequestsPage() {
       date: "December 18, 2026",
       guestCount: "180 Guests",
       venue: "Starlight Ballroom",
-      status: "Accepted",
+      status: "accepted",
       notes: "Tasting confirmed; gluten-free top tier required.",
     },
   ]);
 
-  const updateStatus = (id: string, newStatus: "Accepted" | "Declined") => {
+  const updateStatus = (id: string, newStatus: "accepted" | "declined") => {
     setRequests((prev) =>
       prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r))
     );
@@ -81,9 +81,9 @@ export default function VendorBookingRequestsPage() {
                   </CardTitle>
                   <span
                     className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      req.status === "Accepted"
+                      req.status === "accepted"
                         ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
-                        : req.status === "Declined"
+                        : req.status === "declined"
                         ? "bg-destructive/10 text-destructive border border-destructive/20"
                         : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                     }`}
@@ -103,11 +103,11 @@ export default function VendorBookingRequestsPage() {
                 </CardDescription>
               </div>
 
-              {req.status === "Pending" && (
+              {req.status === "pending" && (
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    onClick={() => updateStatus(req.id, "Accepted")}
+                    onClick={() => updateStatus(req.id, "accepted")}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5 h-8 text-xs"
                   >
                     <Check className="size-3.5" />
@@ -116,7 +116,7 @@ export default function VendorBookingRequestsPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => updateStatus(req.id, "Declined")}
+                    onClick={() => updateStatus(req.id, "declined")}
                     className="text-destructive hover:bg-destructive/10 border-destructive/20 h-8 text-xs gap-1.5"
                   >
                     <X className="size-3.5" />

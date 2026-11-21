@@ -67,7 +67,7 @@ export default function VendorDashboardPage() {
       service: "Floral Arch & Tablescapes",
       date: "Oct 14, 2026",
       guests: "140 Guests",
-      status: "Pending",
+      status: "pending",
     },
     {
       id: "REQ-102",
@@ -75,7 +75,7 @@ export default function VendorDashboardPage() {
       service: "Full Day Photography & Drone",
       date: "Nov 02, 2026",
       guests: "90 Guests",
-      status: "Pending",
+      status: "pending",
     },
     {
       id: "REQ-103",
@@ -83,7 +83,7 @@ export default function VendorDashboardPage() {
       service: "Custom 3-Tier Berry Cake",
       date: "Dec 18, 2026",
       guests: "180 Guests",
-      status: "Confirmed",
+      status: "confirmed",
     },
   ];
 
@@ -173,7 +173,7 @@ export default function VendorDashboardPage() {
                     </span>
                     <span
                       className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                        req.status === "Confirmed"
+                        req.status === "confirmed"
                           ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
                           : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                       }`}

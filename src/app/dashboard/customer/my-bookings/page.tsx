@@ -45,7 +45,7 @@ interface IBookingRecord extends IBookingPayload {
   serviceImage?: string;
 }
 
-type BookingStatus = "Pending" | "Accepted" | "Declined";
+type BookingStatus = "pending" | "accepted" | "declined";
 
 /** Cover image and title resolved from the booked service, used as a fallback. */
 interface IServiceInfo {
@@ -91,17 +91,17 @@ function formatRequestDate(value?: string) {
 /** Reads the status case-insensitively and treats anything unknown as pending. */
 function getBookingStatus(booking: IBookingRecord): BookingStatus {
   const raw = String(
-    booking.bookingStatus ?? booking.status ?? "Pending"
+    booking.bookingStatus ?? booking.status ?? "pending"
   ).toLowerCase();
 
-  if (raw === "accepted") return "Accepted";
-  if (raw === "declined") return "Declined";
-  return "Pending";
+  if (raw === "accepted") return "accepted";
+  if (raw === "declined") return "declined";
+  return "pending";
 }
 
 /** Badge styling and icon for each booking state. */
 function statusMeta(status: BookingStatus) {
-  if (status === "Accepted") {
+  if (status === "accepted") {
     return {
       icon: CheckCircle2,
       className:
@@ -109,7 +109,7 @@ function statusMeta(status: BookingStatus) {
     };
   }
 
-  if (status === "Declined") {
+  if (status === "declined") {
     return {
       icon: XCircle,
       className: "bg-destructive/10 text-destructive border-destructive/20",
@@ -307,7 +307,7 @@ export default function CustomerMyBookingsPage() {
       counts[getBookingStatus(booking)] += 1;
       return counts;
     },
-    { Pending: 0, Accepted: 0, Declined: 0 } as Record<BookingStatus, number>
+    { pending: 0, accepted: 0, declined: 0 } as Record<BookingStatus, number>
   );
 
   return (
@@ -347,15 +347,15 @@ export default function CustomerMyBookingsPage() {
           </span>
           <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 font-medium text-amber-700 dark:text-amber-400">
             <Clock className="size-3" />
-            {statusCounts.Pending} pending
+            {statusCounts.pending} pending
           </span>
           <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-medium text-emerald-700 dark:text-emerald-400">
             <CheckCircle2 className="size-3" />
-            {statusCounts.Accepted} accepted
+            {statusCounts.accepted} accepted
           </span>
           <span className="inline-flex items-center gap-1 rounded-full border border-destructive/20 bg-destructive/10 px-2 py-0.5 font-medium text-destructive">
             <XCircle className="size-3" />
-            {statusCounts.Declined} declined
+            {statusCounts.declined} declined
           </span>
         </div>
       )}
@@ -511,7 +511,7 @@ export default function CustomerMyBookingsPage() {
                             Contact Vendor
                           </a>
                         )}
-                        {status === "Pending" && booking._id && (
+                        {status === "pending" && booking._id && (
                           <Button
                             variant="destructive"
                             size="xs"

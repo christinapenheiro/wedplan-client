@@ -15,7 +15,7 @@ export default function AdminManageUsersPage() {
       email: "eleanor@example.com",
       role: "Customer",
       joined: "Nov 18, 2026",
-      status: "Active",
+      status: "active",
     },
     {
       id: "USR-02",
@@ -23,7 +23,7 @@ export default function AdminManageUsersPage() {
       email: "events@meadowview.com",
       role: "Vendor",
       joined: "Nov 17, 2026",
-      status: "Active",
+      status: "active",
     },
     {
       id: "USR-03",
@@ -31,7 +31,7 @@ export default function AdminManageUsersPage() {
       email: "hello@lumiere.com",
       role: "Vendor",
       joined: "Nov 15, 2026",
-      status: "Active",
+      status: "active",
     },
     {
       id: "USR-04",
@@ -39,7 +39,7 @@ export default function AdminManageUsersPage() {
       email: "noah.sterling@example.com",
       role: "Customer",
       joined: "Nov 12, 2026",
-      status: "Active",
+      status: "active",
     },
     {
       id: "USR-05",
@@ -47,7 +47,7 @@ export default function AdminManageUsersPage() {
       email: "info@vintagecarriage.com",
       role: "Vendor",
       joined: "Nov 10, 2026",
-      status: "Suspended",
+      status: "suspended",
     },
   ]);
 
@@ -64,7 +64,7 @@ export default function AdminManageUsersPage() {
         if (u.id === id) {
           return {
             ...u,
-            status: u.status === "Active" ? "Suspended" : "Active",
+            status: u.status === "active" ? "suspended" : "active",
           };
         }
         return u;
@@ -132,7 +132,7 @@ export default function AdminManageUsersPage() {
                     <td className="px-4 py-3.5">
                       <span
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          user.status === "Active"
+                          user.status === "active"
                             ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
                             : "bg-destructive/10 text-destructive border border-destructive/20"
                         }`}
@@ -145,9 +145,9 @@ export default function AdminManageUsersPage() {
                         variant="outline"
                         size="xs"
                         onClick={() => toggleStatus(user.id)}
-                        className={user.status === "Active" ? "text-destructive hover:bg-destructive/10" : "text-emerald-600"}
+                        className={user.status === "active" ? "text-destructive hover:bg-destructive/10" : "text-emerald-600"}
                       >
-                        {user.status === "Active" ? (
+                        {user.status === "active" ? (
                           <>
                             <Ban className="size-3 mr-1" />
                             Suspend

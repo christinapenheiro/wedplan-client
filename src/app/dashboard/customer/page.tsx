@@ -35,17 +35,17 @@ interface IBookingRecord extends IBookingPayload {
   status?: string;
 }
 
-type BookingStatus = "Pending" | "Accepted" | "Declined";
+type BookingStatus = "pending" | "accepted" | "declined";
 
 /** Reads the status case-insensitively and treats anything unknown as pending. */
 function getBookingStatus(booking: IBookingRecord): BookingStatus {
   const raw = String(
-    booking.bookingStatus ?? booking.status ?? "Pending"
+    booking.bookingStatus ?? booking.status ?? "pending"
   ).toLowerCase();
 
-  if (raw === "accepted") return "Accepted";
-  if (raw === "declined") return "Declined";
-  return "Pending";
+  if (raw === "accepted") return "accepted";
+  if (raw === "declined") return "declined";
+  return "pending";
 }
 
 /** Accepts either the array returned for a customer lookup or a single record. */
@@ -82,7 +82,7 @@ function formatEventDate(value?: string) {
 
 /** Badge styling for the two statuses shown in the active bookings list. */
 function statusBadgeClass(status: BookingStatus) {
-  if (status === "Accepted") {
+  if (status === "accepted") {
     return "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20";
   }
 
@@ -142,7 +142,7 @@ export default function CustomerDashboardPage() {
       counts[getBookingStatus(booking)] += 1;
       return counts;
     },
-    { Pending: 0, Accepted: 0, Declined: 0 } as Record<BookingStatus, number>
+    { pending: 0, accepted: 0, declined: 0 } as Record<BookingStatus, number>
   );
 
   const metrics = [
@@ -156,7 +156,7 @@ export default function CustomerDashboardPage() {
     },
     {
       title: "Pending Bookings",
-      value: statusCounts.Pending,
+      value: statusCounts.pending,
       subtitle: "Awaiting a vendor response",
       icon: Clock,
       color: "text-amber-600",
@@ -164,7 +164,7 @@ export default function CustomerDashboardPage() {
     },
     {
       title: "Accepted Bookings",
-      value: statusCounts.Accepted,
+      value: statusCounts.accepted,
       subtitle: "Confirmed by vendors",
       icon: CheckCircle2,
       color: "text-emerald-600",
@@ -172,7 +172,7 @@ export default function CustomerDashboardPage() {
     },
     {
       title: "Rejected Bookings",
-      value: statusCounts.Declined,
+      value: statusCounts.declined,
       subtitle: "Declined by vendors",
       icon: XCircle,
       color: "text-destructive",
@@ -183,7 +183,7 @@ export default function CustomerDashboardPage() {
   // Only pending and accepted requests count as active vendor engagements.
   const activeBookings = bookings.filter((booking) => {
     const status = getBookingStatus(booking);
-    return status === "Pending" || status === "Accepted";
+    return status === "pending" || status === "accepted";
   });
 
   return (
@@ -345,7 +345,7 @@ export default function CustomerDashboardPage() {
                       <span
                         className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusBadgeClass(status)}`}
                       >
-                        {status === "Accepted" ? (
+                        {status === "accepted" ? (
                           <CheckCircle2 className="size-3" />
                         ) : (
                           <Clock className="size-3" />

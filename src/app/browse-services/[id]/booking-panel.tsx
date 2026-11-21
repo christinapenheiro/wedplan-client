@@ -23,9 +23,9 @@ interface IBookingRecord extends IBookingPayload {
 }
 
 /**
- * Normalises the booking status from the API. The stored values are capitalised
- * ("Pending", "Accepted", "Declined"), so comparing them directly to lowercase
- * strings silently fails. Unknown/missing values mean there is no active request.
+ * Normalises the booking status from the API. Stored values are lowercase
+ * ("pending", "accepted", "declined"), so compare them directly against the
+ * lowercase strings. Unknown/missing values mean there is no active request.
  */
 function getBookingStatus(
   booking: IBookingRecord | IBookingRecord[] | null | undefined
@@ -37,9 +37,9 @@ function getBookingStatus(
 
   const normalized = String(raw).toLowerCase();
 
-  if (normalized === "pending") return "Pending";
-  if (normalized === "accepted") return "Accepted";
-  if (normalized === "declined") return "Declined";
+  if (normalized === "pending") return "pending";
+  if (normalized === "accepted") return "accepted";
+  if (normalized === "declined") return "declined";
 
   return null;
 }
@@ -134,21 +134,21 @@ export default function BookingPanel({
           quote.
         </p>
 
-        {bookingStatus === "Pending" ? (
+        {bookingStatus === "pending" ? (
           <span
             aria-disabled="true"
             className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
           >
             Pending for Vendor Review
           </span>
-        ) : bookingStatus === "Accepted" ? (
+        ) : bookingStatus === "accepted" ? (
           <span
             aria-disabled="true"
             className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
           >
             Booking Accepted
           </span>
-        ) : bookingStatus === "Declined" ? (
+        ) : bookingStatus === "declined" ? (
           <span
             aria-disabled="true"
             className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"

@@ -13,7 +13,7 @@ export default function AdminManageServicesPage() {
       vendor: "Lumiere Studios",
       category: "Photography",
       price: "$2,400",
-      status: "Approved",
+      status: "approved",
     },
     {
       id: "SRV-M2",
@@ -21,7 +21,7 @@ export default function AdminManageServicesPage() {
       vendor: "Blush & Petal Co.",
       category: "Floral",
       price: "$1,850",
-      status: "Approved",
+      status: "approved",
     },
     {
       id: "SRV-M3",
@@ -29,7 +29,7 @@ export default function AdminManageServicesPage() {
       vendor: "Coastal Moments",
       category: "Venue / Decor",
       price: "$3,100",
-      status: "Pending Review",
+      status: "pending review",
     },
     {
       id: "SRV-M4",
@@ -37,11 +37,11 @@ export default function AdminManageServicesPage() {
       vendor: "Sugar & Crumb Bakery",
       category: "Catering",
       price: "$450",
-      status: "Pending Review",
+      status: "pending review",
     },
   ]);
 
-  const setStatus = (id: string, newStatus: "Approved" | "Rejected") => {
+  const setStatus = (id: string, newStatus: "approved" | "rejected") => {
     setServices((prev) =>
       prev.map((s) => (s.id === id ? { ...s, status: newStatus } : s))
     );
@@ -67,9 +67,9 @@ export default function AdminManageServicesPage() {
                   <span className="font-bold text-sm text-foreground">{item.title}</span>
                   <span
                     className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      item.status === "Approved"
+                      item.status === "approved"
                         ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
-                        : item.status === "Rejected"
+                        : item.status === "rejected"
                         ? "bg-destructive/10 text-destructive border border-destructive/20"
                         : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                     }`}
@@ -83,21 +83,21 @@ export default function AdminManageServicesPage() {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {item.status !== "Approved" && (
+                {item.status !== "approved" && (
                   <Button
                     size="xs"
-                    onClick={() => setStatus(item.id, "Approved")}
+                    onClick={() => setStatus(item.id, "approved")}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1"
                   >
                     <Check className="size-3.5" />
                     Approve
                   </Button>
                 )}
-                {item.status !== "Rejected" && (
+                {item.status !== "rejected" && (
                   <Button
                     size="xs"
                     variant="outline"
-                    onClick={() => setStatus(item.id, "Rejected")}
+                    onClick={() => setStatus(item.id, "rejected")}
                     className="text-destructive hover:bg-destructive/10 border-destructive/20 gap-1"
                   >
                     <X className="size-3.5" />

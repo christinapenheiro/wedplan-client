@@ -98,8 +98,8 @@ const STATUS_FILTERS: ("All" | ServiceStatus)[] = [
 
 /** Normalises a stored status — records saved without one are treated as awaiting review. */
 function getStatus(service: IService): ServiceStatus {
-  if (service.status === "Active") return "active";
-  if (service.status === "Declined") return "declined";
+  if (service.status === "active") return "active";
+  if (service.status === "declined") return "declined";
   return "pending";
 }
 

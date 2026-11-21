@@ -33,7 +33,7 @@ export interface IService extends IAddServiceForm {
   /** Optional vendor location, when the record includes one. */
   location?: string;
   createdAt: string;
-  status: "Active" | "Pending" | "Declined";
+  status: "active" | "pending" | "declined";
   /** Vendor-controlled booking availability; missing on legacy records means available. */
   isAvailable?: boolean;
 }
@@ -57,8 +57,8 @@ export interface IBookingPayload extends IBookingFormData {
   vendorName?: string;
   customerId?: string;
   customerRole?: IAccountRole;
-  bookingStatus: "Pending" | "Accepted" | "Declined";
+  bookingStatus: "pending" | "accepted" | "declined";
   createdAt: string;
 }
 
-export type TBookingStatus = "Pending" | "Accepted" | "Declined";
+export type TBookingStatus = "pending" | "accepted" | "declined";

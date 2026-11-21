@@ -63,21 +63,21 @@ export default function AdminDashboardPage() {
       email: "eleanor@example.com",
       role: "Customer",
       joined: "Today, 10:20 AM",
-      status: "Active",
+      status: "active",
     },
     {
       name: "Meadow View Estate",
       email: "events@meadowview.com",
       role: "Vendor",
       joined: "Yesterday",
-      status: "Verified",
+      status: "verified",
     },
     {
       name: "Lumiere Studios",
       email: "hello@lumiere.com",
       role: "Vendor",
       joined: "Nov 15, 2026",
-      status: "Verified",
+      status: "verified",
     },
   ];
 

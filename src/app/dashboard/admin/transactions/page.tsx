@@ -14,7 +14,7 @@ export default function AdminTransactionsPage() {
       amount: "$6,500.00",
       commission: "$650.00",
       date: "Nov 18, 2026",
-      status: "Completed",
+      status: "completed",
     },
     {
       id: "TX-9011",
@@ -23,7 +23,7 @@ export default function AdminTransactionsPage() {
       amount: "$2,800.00",
       commission: "$280.00",
       date: "Nov 17, 2026",
-      status: "Completed",
+      status: "completed",
     },
     {
       id: "TX-9010",
@@ -32,7 +32,7 @@ export default function AdminTransactionsPage() {
       amount: "$1,650.00",
       commission: "$165.00",
       date: "Nov 16, 2026",
-      status: "Processing",
+      status: "processing",
     },
     {
       id: "TX-9009",
@@ -41,7 +41,7 @@ export default function AdminTransactionsPage() {
       amount: "$750.00",
       commission: "$75.00",
       date: "Nov 14, 2026",
-      status: "Completed",
+      status: "completed",
     },
   ];
 
@@ -125,7 +125,7 @@ export default function AdminTransactionsPage() {
                     <td className="px-4 py-3.5 text-right">
                       <span
                         className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          tx.status === "Completed"
+                          tx.status === "completed"
                             ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
                             : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
                         }`}

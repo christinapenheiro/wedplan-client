@@ -1,9 +1,9 @@
+"use server"
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "../auth";
 
 const RequireClientSessionForUser = async(accountType:string) => {
-    "use server";
     const session = await auth.api.getSession({
         headers: await headers()
     })
@@ -19,7 +19,6 @@ export default RequireClientSessionForUser;
 
 
 export const RequireAdminSessionForUser = async (role: string) => {
-  "use server";
   const session = await auth.api.getSession({
     headers: await headers(),
   });

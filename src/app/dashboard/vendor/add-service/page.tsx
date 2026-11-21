@@ -190,7 +190,7 @@ export default function VendorAddServicePage() {
         imageUrls,
         vendorId: userId,
         vendorEmail: userEmail,
-        status: "Pending", // New services start as Pending for admin review
+        status: "pending", // New services start as pending for admin review
         vendorName: session?.user?.name || undefined,
       });
       // setStatus("success");

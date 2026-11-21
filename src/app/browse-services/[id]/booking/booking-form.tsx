@@ -34,12 +34,14 @@ interface BookingFormProps {
 
 export default function BookingForm({ service, vendorName }: BookingFormProps) {
   const router = useRouter();
-  const { data:session } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const token = session?.session?.token;
 
   // Form input state
   const [eventDate, setEventDate] = React.useState("");
-  const [eventLocation, setEventLocation] = React.useState(service.location || "");
+  const [eventLocation, setEventLocation] = React.useState(
+    service.location || "",
+  );
   const [additionalMessage, setAdditionalMessage] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
@@ -64,7 +66,8 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
     if (!eventLocation.trim()) {
       toast.add({
         title: "Missing location",
-        description: "Please specify the city, venue, or address for your event.",
+        description:
+          "Please specify the city, venue, or address for your event.",
         type: "warning",
       });
       return;
@@ -85,14 +88,14 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
         eventDate,
         eventLocation: eventLocation.trim(),
         additionalMessage: additionalMessage.trim(),
-        customerName: session?.user?.name || "" ,
+        customerName: session?.user?.name || "",
         customerId: session?.user?.id,
         // Status metadata
-        bookingStatus: "Pending",
+        bookingStatus: "pending",
         createdAt: new Date().toISOString(),
         customerRole:
-          (session?.user as { accountType?: IAccountRole } | undefined)?.accountType ||
-          "customer",
+          (session?.user as { accountType?: IAccountRole } | undefined)
+            ?.accountType || "customer",
       };
 
       // 2. Create standard FormData object with all collected data
@@ -119,23 +122,28 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
        * });
        */
       try {
-        await clientApi.post("/bookings",token as string, bookingData);
-      } catch (apiErr) {
+        await clientApi.post("/bookings", token as string, bookingData);
+
+        setIsSuccess(true);
+        // Trigger Shadcn / Base UI Success Toast
+        toast.add({
+          title: "Booking request submitted!",
+          description: `Your request for "${service.title}" has been sent to ${vendorName}.`,
+          type: "success",
+        });
+      } catch (error) {
         // If the backend endpoint is not yet connected by the user, we log and treat as queued
-        console.info(
-          "Backend endpoint /bookings pending backend implementation:",
-          apiErr
-        );
+        console.error("Booking submission error:", error);
+        // Trigger Shadcn / Base UI Error Toast
+        toast.add({
+          title: "Failed to submit request",
+          description:
+            error instanceof Error
+              ? error.message
+              : "An unexpected error occurred. Please try again.",
+          type: "error",
+        });
       }
-
-      setIsSuccess(true);
-
-      // Trigger Shadcn / Base UI Success Toast
-      toast.add({
-        title: "Booking request submitted!",
-        description: `Your request for "${service.title}" has been sent to ${vendorName}.`,
-        type: "success",
-      });
 
       // Optional redirect back to service details after brief delay
       setTimeout(() => {
@@ -143,16 +151,6 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
       }, 2500);
     } catch (error) {
       console.error("Booking submission error:", error);
-
-      // Trigger Shadcn / Base UI Error Toast
-      toast.add({
-        title: "Failed to submit request",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred. Please try again.",
-        type: "error",
-      });
     } finally {
       setIsSubmitting(false);
     }
@@ -170,8 +168,8 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           Thank you! Your booking details for{" "}
           <strong className="text-foreground">{service.title}</strong> have been
-          forwarded to <strong className="text-foreground">{vendorName}</strong>.
-          You will receive a response soon.
+          forwarded to <strong className="text-foreground">{vendorName}</strong>
+          . You will receive a response soon.
         </p>
         <p className="mt-4 text-xs text-muted-foreground">
           Redirecting you back to the service details...
@@ -191,8 +189,8 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
           Book This Wedding Service
         </CardTitle>
         <CardDescription className="text-xs text-muted-foreground">
-          Provide your event date and location to request direct confirmation from{" "}
-          {vendorName}.
+          Provide your event date and location to request direct confirmation
+          from {vendorName}.
         </CardDescription>
       </CardHeader>
 
@@ -236,7 +234,7 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
                         month: "long",
                         day: "numeric",
                         year: "numeric",
-                      }
+                      },
                     )}
                   </span>
                 </p>
@@ -291,7 +289,6 @@ export default function BookingForm({ service, vendorName }: BookingFormProps) {
           </div>
 
           <div className="h-px w-full bg-border/60" />
- 
 
           {/* Guarantee pill */}
           <div className="flex items-start gap-2.5 p-3.5 text-xs text-muted-foreground">
