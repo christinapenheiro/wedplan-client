@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "@/components/ui/toast";
 import {
   HeartHandshake,
   LayoutDashboard,
@@ -34,6 +35,7 @@ import {
   LogOut,
   Home,
   Sparkles,
+  Crown,
 } from "lucide-react";
 
 /**
@@ -191,6 +193,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
+            toast.add({
+              type: "success",
+              title: "Signed out",
+              description: "You have been signed out successfully.",
+            });
             router.push("/sign-in");
             router.refresh();
           },
@@ -198,6 +205,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       });
     } catch (err) {
       console.error("Sign out error:", err);
+      toast.add({
+        type: "error",
+        title: "Sign out failed",
+        description: "Something went wrong. Please try again.",
+      });
     }
   };
 

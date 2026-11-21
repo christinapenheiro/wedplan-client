@@ -15,11 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "@/components/ui/toast";
 import {
   Eye,
   EyeOff,
-  AlertCircle,
-  CheckCircle2,
   Loader2,
   Mail,
   Lock,
@@ -39,25 +38,21 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
 
   /**
    * Submits user credentials to Better Auth email/password authentication endpoint.
-   * On success, displays a confirmation message and redirects the user to the home page ("/").
+   * On success, shows a success toast and redirects the user to the home page ("/").
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(null);
-    setSuccessMessage(null);
 
     if (!email.trim()) {
-      setErrorMessage("Please enter your email address.");
+      toast.add({ type: "error", title: "Missing email", description: "Please enter your email address." });
       return;
     }
 
     if (!password) {
-      setErrorMessage("Please enter your password.");
+      toast.add({ type: "error", title: "Missing password", description: "Please enter your password." });
       return;
     }
 
@@ -72,12 +67,20 @@ export default function SignInPage() {
       });
 
       if (error) {
-        setErrorMessage(error.message || "Invalid email or password. Please try again.");
+        toast.add({
+          type: "error",
+          title: "Sign in failed",
+          description: error.message || "Invalid email or password. Please try again.",
+        });
         setIsSubmitting(false);
         return;
       }
 
-      setSuccessMessage("Signed in successfully! Redirecting to home...");
+      toast.add({
+        type: "success",
+        title: "Signed in successfully!",
+        description: "Redirecting to your dashboard...",
+      });
 
       setTimeout(() => {
         router.push("/");
@@ -85,7 +88,7 @@ export default function SignInPage() {
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "An unexpected error occurred during sign in.";
-      setErrorMessage(message);
+      toast.add({ type: "error", title: "Sign in failed", description: message });
       setIsSubmitting(false);
     }
   };
@@ -95,7 +98,6 @@ export default function SignInPage() {
    * Redirects users to Google consent screen and returns them to "/" upon completion.
    */
   const handleGoogleSignIn = async () => {
-    setErrorMessage(null);
     setIsGoogleLoading(true);
 
     try {
@@ -106,7 +108,7 @@ export default function SignInPage() {
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to initialize Google authentication.";
-      setErrorMessage(message);
+      toast.add({ type: "error", title: "Google sign in failed", description: message });
       setIsGoogleLoading(false);
     }
   };
@@ -135,28 +137,6 @@ export default function SignInPage() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Success Banner */}
-          {successMessage && (
-            <div
-              data-slot="alert-success"
-              className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-800 dark:text-emerald-300"
-            >
-              <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
-              <span>{successMessage}</span>
-            </div>
-          )}
-
-          {/* Error Banner */}
-          {errorMessage && (
-            <div
-              data-slot="alert-error"
-              className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
-            >
-              <AlertCircle className="size-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
-
           {/* Google Sign-in Option */}
           <Button
             type="button"
@@ -226,7 +206,7 @@ export default function SignInPage() {
                   className="text-xs text-[#99616E] hover:underline underline-offset-4"
                   onClick={(e) => {
                     e.preventDefault();
-                    setErrorMessage("Password reset is currently configured via email. Please contact support.");
+                    toast.add({ type: "info", title: "Password reset", description: "Password reset is currently configured via email. Please contact support." });
                   }}
                 >
                   Forgot password?

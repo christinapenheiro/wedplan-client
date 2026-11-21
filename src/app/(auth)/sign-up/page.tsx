@@ -17,12 +17,12 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { uploadToImgBB } from "@/lib/imgbb";
+import { toast } from "@/components/ui/toast";
 import {
   Eye,
   EyeOff,
   UploadCloud,
   CheckCircle2,
-  AlertCircle,
   Loader2,
   User,
   Mail,
@@ -52,10 +52,6 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = React.useState<string | null>(
-    null,
-  );
 
   // Real-time password requirement evaluations
   const hasMinLength = password.length >= 6;
@@ -72,12 +68,12 @@ export default function SignUpPage() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setErrorMessage("Please select a valid image file (PNG, JPG, WEBP).");
+      toast.add({ type: "error", title: "Invalid file", description: "Please select a valid image file (PNG, JPG, WEBP)." });
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      setErrorMessage("Image file size must be under 10MB.");
+      toast.add({ type: "error", title: "File too large", description: "Image file size must be under 10MB." });
       return;
     }
 
@@ -87,7 +83,6 @@ export default function SignUpPage() {
 
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
-    setErrorMessage(null);
   };
 
   /**
@@ -110,28 +105,24 @@ export default function SignUpPage() {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage(null);
-    setSuccessMessage(null);
 
     if (!fullName.trim()) {
-      setErrorMessage("Please provide your full name.");
+      toast.add({ type: "error", title: "Missing name", description: "Please provide your full name." });
       return;
     }
 
     if (accountType === "vendor" && !businessName.trim()) {
-      setErrorMessage("Please provide your business name.");
+      toast.add({ type: "error", title: "Missing business name", description: "Please provide your business name." });
       return;
     }
 
     if (!email.trim()) {
-      setErrorMessage("Please provide a valid email address.");
+      toast.add({ type: "error", title: "Missing email", description: "Please provide a valid email address." });
       return;
     }
 
     if (!isPasswordValid) {
-      setErrorMessage(
-        "Please satisfy all password requirements before proceeding.",
-      );
+      toast.add({ type: "error", title: "Weak password", description: "Please satisfy all password requirements before proceeding." });
       return;
     }
 
@@ -164,14 +155,20 @@ export default function SignUpPage() {
       console.log(data, error);
 
       if (error) {
-        setErrorMessage(
-          error.message || "Registration failed. Please try again.",
-        );
+        toast.add({
+          type: "error",
+          title: "Registration failed",
+          description: error.message || "Registration failed. Please try again.",
+        });
         setIsSubmitting(false);
         return;
       }
 
-      setSuccessMessage("Account created successfully! Redirecting to home...");
+      toast.add({
+        type: "success",
+        title: "Account created!",
+        description: "Welcome to WedPlan. Redirecting you now...",
+      });
 
       setTimeout(() => {
         router.push("/");
@@ -181,7 +178,7 @@ export default function SignUpPage() {
         err instanceof Error
           ? err.message
           : "An unexpected error occurred during sign up.";
-      setErrorMessage(message);
+      toast.add({ type: "error", title: "Sign up failed", description: message });
       setIsSubmitting(false);
     }
   };
@@ -191,7 +188,6 @@ export default function SignUpPage() {
    * Redirects users to Google consent screen and returns them to "/" upon completion.
    */
   const handleGoogleSignIn = async () => {
-    setErrorMessage(null);
     setIsGoogleLoading(true);
 
     try {
@@ -204,7 +200,7 @@ export default function SignUpPage() {
         err instanceof Error
           ? err.message
           : "Failed to initialize Google authentication.";
-      setErrorMessage(message);
+      toast.add({ type: "error", title: "Google sign in failed", description: message });
       setIsGoogleLoading(false);
     }
   };
@@ -233,28 +229,6 @@ export default function SignUpPage() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Success Banner */}
-          {successMessage && (
-            <div
-              data-slot="alert-success"
-              className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-800 dark:text-emerald-300"
-            >
-              <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
-              <span>{successMessage}</span>
-            </div>
-          )}
-
-          {/* Error Banner */}
-          {errorMessage && (
-            <div
-              data-slot="alert-error"
-              className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive"
-            >
-              <AlertCircle className="size-4 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
-
           {/* Google Sign-in Option */}
           <Button
             type="button"

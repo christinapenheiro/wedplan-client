@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { toast } from "@/components/ui/toast";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -56,6 +57,11 @@ export default function Navbar() {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
+            toast.add({
+              type: "success",
+              title: "Signed out",
+              description: "You have been signed out successfully.",
+            });
             router.push("/sign-in");
             router.refresh();
           },
@@ -63,6 +69,11 @@ export default function Navbar() {
       });
     } catch (error) {
       console.error("Failed to sign out:", error);
+      toast.add({
+        type: "error",
+        title: "Sign out failed",
+        description: "Something went wrong. Please try again.",
+      });
     } finally {
       setIsSigningOut(false);
     }

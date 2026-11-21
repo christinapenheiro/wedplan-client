@@ -183,8 +183,19 @@ export default function VendorDashboardPage() {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Vendor Dashboard Overview
           </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            Welcome back, {session?.user?.name || "Partner"}! Here is your wedding business snapshot.
+          <div className="flex flex-wrap items-center gap-2 mt-0.5">
+            <p className="text-sm text-muted-foreground">
+              Welcome back, {session?.user?.name || "Partner"}!
+            </p>
+            {isPremium && (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 text-[10px] font-bold tracking-wider">
+                <Crown className="size-3" />
+                PREMIUM
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground/80 mt-1">
+            Here is your wedding business snapshot.
           </p>
         </div>
         <div className="flex items-center gap-2.5">
