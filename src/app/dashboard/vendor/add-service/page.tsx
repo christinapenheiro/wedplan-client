@@ -89,6 +89,7 @@ export default function VendorAddServicePage() {
   const [description, setDescription] = React.useState("");
   const [previews, setPreviews] = React.useState<PreviewFile[]>([]);
   const [submitting, setSubmitting] = React.useState(false);
+  const [location, setLocation] = React.useState("");
   // const [status, setStatus] = React.useState<"success" | "error" | null>(null);
   // const [errorMsg, setErrorMsg] = React.useState("");
   const { data:session } = authClient.useSession();
@@ -320,6 +321,16 @@ export default function VendorAddServicePage() {
                 </div>
               </div>
 
+              <div className="space-y-1.5">
+                <Label htmlFor="location">Service Location</Label>
+                <Input
+                  id="location"
+                  placeholder="e.g. New York, NY"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  required
+                />
+              </div>
               {/* Description */}
               <div className="space-y-1.5">
                 <Label htmlFor="description">

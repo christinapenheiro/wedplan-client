@@ -1,6 +1,7 @@
 import Banner from "@/components/home/Banner";
 import FeaturedServices from "@/components/home/FeaturedServices";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
+import Testimonials from "@/components/home/Testimonials";
 import { clientApi } from "@/lib/api/clientApi";
 import type { IService } from "@/lib/types";
 
@@ -22,6 +23,7 @@ export default async function Home() {
       <Banner />
       <FeaturedServices services={featuredServices} />
       <WhyChooseUs />
+      <Testimonials />
     </div>
   );
 }
