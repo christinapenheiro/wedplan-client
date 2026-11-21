@@ -103,7 +103,7 @@ export default function Banner() {
 
     const timer = setInterval(() => {
       setActiveCardIndex((prev) => (prev + 1) % BANNER_CARDS.length);
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(timer);
   }, [isHovered]);

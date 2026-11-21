@@ -13,7 +13,7 @@ export default async function Home() {
 
   try {
     const res = await clientApi.get<IService[]>("/featured");
-    featuredServices = res ?? [];
+    featuredServices = (res ?? []).filter((item) => item.status === "active");
   } catch (error) {
     console.error("Failed to load featured services on homepage:", error);
     featuredServices = [];

@@ -84,9 +84,10 @@ const FALLBACK_FEATURED: IService[] = [
 ];
 
 export default function FeaturedServices({ services }: FeaturedServicesProps) {
-  // Use real backend services if available; fill up with editorial previews if needed
+  // Only display active status services; fallback to editorial preview if none found
+  const activeServices = (services ?? []).filter((s) => s.status === "active");
   const displayItems =
-    services && services.length > 0 ? services.slice(0, 6) : FALLBACK_FEATURED;
+    activeServices.length > 0 ? activeServices.slice(0, 6) : FALLBACK_FEATURED;
 
   return (
     <section className="relative w-full py-20 lg:py-28 bg-[#FAF8FA] dark:bg-[#191417] overflow-hidden">
