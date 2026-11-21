@@ -35,6 +35,7 @@ export const clientApi = {
   get: <T>(path: string, token?: string) =>
     request<T>(path, {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

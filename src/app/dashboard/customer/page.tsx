@@ -37,24 +37,28 @@ interface IBookingRecord extends IBookingPayload {
 
 type BookingStatus = "pending" | "accepted" | "declined";
 
-/** Reads the status case-insensitively and treats anything unknown as pending. */
+/**
+ * Reads the status case-insensitively and maps both "declined" and "rejected"
+ * to "declined", and "accepted" / "confirmed" to "accepted".
+ */
 function getBookingStatus(booking: IBookingRecord): BookingStatus {
   const raw = String(
     booking.bookingStatus ?? booking.status ?? "pending"
   ).toLowerCase();
 
-  if (raw === "accepted") return "accepted";
-  if (raw === "declined") return "declined";
+  if (raw === "accepted" || raw === "confirmed") return "accepted";
+  if (raw === "declined" || raw === "rejected") return "declined";
   return "pending";
 }
 
 /** Accepts either the array returned for a customer lookup or a single record. */
 function toBookingList(
   payload: IBookingRecord | IBookingRecord[] | null | undefined
-) {
+): IBookingRecord[] {
   if (!payload) return [];
 
-  return Array.isArray(payload) ? payload : [payload];
+  const list = Array.isArray(payload) ? payload : [payload];
+  return list.filter((b) => b && typeof b === "object");
 }
 
 /** Normalises a date-only string (YYYY-MM-DD) as local time so the day never shifts. */
@@ -80,13 +84,32 @@ function formatEventDate(value?: string) {
   }).format(date);
 }
 
-/** Badge styling for the two statuses shown in the active bookings list. */
-function statusBadgeClass(status: BookingStatus) {
+/** Visual metadata (badge style, label, icon) for each booking status. */
+function statusMeta(status: BookingStatus) {
   if (status === "accepted") {
-    return "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20";
+    return {
+      label: "Accepted",
+      icon: CheckCircle2,
+      className:
+        "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+    };
   }
 
-  return "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20";
+  if (status === "declined") {
+    return {
+      label: "Declined",
+      icon: XCircle,
+      className:
+        "bg-destructive/10 text-destructive border-destructive/20",
+    };
+  }
+
+  return {
+    label: "Pending",
+    icon: Clock,
+    className:
+      "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",
+  };
 }
 
 export default function CustomerDashboardPage() {
@@ -112,7 +135,10 @@ export default function CustomerDashboardPage() {
       try {
         const response = await clientApi.get<
           IBookingRecord | IBookingRecord[] | null
-        >(`/bookings?customerId=${encodeURIComponent(userId)}`,token as string);
+        >(
+          `/bookings?customerId=${encodeURIComponent(userId)}`,
+          token as string
+        );
 
         if (cancelled) return;
 
@@ -133,13 +159,14 @@ export default function CustomerDashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [userId, sessionLoading, reloadKey]);
+  }, [userId, token, sessionLoading, reloadKey]);
 
   const isStatsLoading = sessionLoading || (Boolean(userId) && loading);
 
   const statusCounts = bookings.reduce(
     (counts, booking) => {
-      counts[getBookingStatus(booking)] += 1;
+      const status = getBookingStatus(booking);
+      counts[status] += 1;
       return counts;
     },
     { pending: 0, accepted: 0, declined: 0 } as Record<BookingStatus, number>
@@ -180,11 +207,8 @@ export default function CustomerDashboardPage() {
     },
   ];
 
-  // Only pending and accepted requests count as active vendor engagements.
-  const activeBookings = bookings.filter((booking) => {
-    const status = getBookingStatus(booking);
-    return status === "pending" || status === "accepted";
-  });
+  // Most recent booking requests (newest first)
+  const recentBookings = bookings.slice(0, 5);
 
   return (
     <div className="space-y-6">
@@ -203,9 +227,23 @@ export default function CustomerDashboardPage() {
         </div>
 
         <div className="flex items-center gap-2.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setReloadKey((k) => k + 1)}
+            disabled={loading}
+            className="gap-2 h-9 border-border text-foreground hover:bg-muted"
+          >
+            <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
+            <span>Refresh</span>
+          </Button>
+
           <Link
             href="/browse-services"
-            className={buttonVariants({ variant: "default" }) + " bg-primary text-primary-foreground hover:bg-primary/90 gap-2"}
+            className={
+              buttonVariants({ variant: "default" }) +
+              " bg-primary text-primary-foreground hover:bg-primary/90 gap-2 shadow-xs"
+            }
           >
             <Compass className="size-4" />
             <span>Explore Vendors</span>
@@ -236,13 +274,15 @@ export default function CustomerDashboardPage() {
         {metrics.map((m) => {
           const Icon = m.icon;
           return (
-            <Card key={m.title} className="border-border">
+            <Card key={m.title} className="border-border shadow-xs">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     {m.title}
                   </span>
-                  <div className={`size-8 rounded-lg ${m.bg} flex items-center justify-center ${m.color}`}>
+                  <div
+                    className={`size-8 rounded-lg ${m.bg} flex items-center justify-center ${m.color}`}
+                  >
                     <Icon className="size-4" />
                   </div>
                 </div>
@@ -264,20 +304,23 @@ export default function CustomerDashboardPage() {
         })}
       </div>
 
-      {/* Active bookings */}
-      <Card className="border-border">
+      {/* Recent Bookings Overview */}
+      <Card className="border-border shadow-xs">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <div>
             <CardTitle className="text-base font-semibold">
               My Booked Vendors & Services
             </CardTitle>
             <CardDescription>
-              Pending and accepted requests with their current status
+              Your recent booking requests with their current updated status
             </CardDescription>
           </div>
           <Link
             href="/dashboard/customer/my-bookings"
-            className={buttonVariants({ variant: "ghost", size: "sm" }) + " text-xs text-primary gap-1"}
+            className={
+              buttonVariants({ variant: "ghost", size: "sm" }) +
+              " text-xs text-primary gap-1"
+            }
           >
             <span>View All</span>
             <ArrowRight className="size-3" />
@@ -302,29 +345,34 @@ export default function CustomerDashboardPage() {
               Your bookings could not be loaded right now. Use “Try again”
               above to retry.
             </p>
-          ) : activeBookings.length === 0 ? (
+          ) : recentBookings.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 px-6 py-10 text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <Inbox className="size-6" />
               </div>
               <h3 className="mt-3 text-sm font-semibold text-foreground">
-                No active booking requests
+                No booking requests yet
               </h3>
               <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-                When you request a vendor, pending and accepted bookings will
-                show up here with their status.
+                When you request a vendor service, your bookings will appear
+                here with their updated status.
               </p>
               <Link
                 href="/browse-services"
-                className={buttonVariants({ variant: "outline", size: "sm" }) + " mt-4 gap-1.5"}
+                className={
+                  buttonVariants({ variant: "outline", size: "sm" }) +
+                  " mt-4 gap-1.5"
+                }
               >
                 <Compass className="size-3.5" />
                 Browse services
               </Link>
             </div>
           ) : (
-            activeBookings.map((booking) => {
+            recentBookings.map((booking) => {
               const status = getBookingStatus(booking);
+              const meta = statusMeta(status);
+              const StatusIcon = meta.icon;
               const vendor = booking.vendorName || "Vendor";
               const serviceTitle =
                 booking.serviceTitle || "Wedding service";
@@ -335,7 +383,7 @@ export default function CustomerDashboardPage() {
                     booking._id ??
                     `${booking.serviceId}-${booking.createdAt ?? "unknown"}`
                   }
-                  className="flex flex-col gap-3 rounded-lg border border-border/80 bg-muted/20 p-3.5 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-3 rounded-lg border border-border/80 bg-muted/20 p-3.5 sm:flex-row sm:items-center sm:justify-between hover:bg-muted/30 transition-colors"
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
@@ -343,14 +391,10 @@ export default function CustomerDashboardPage() {
                         {vendor}
                       </span>
                       <span
-                        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${statusBadgeClass(status)}`}
+                        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.className}`}
                       >
-                        {status === "accepted" ? (
-                          <CheckCircle2 className="size-3" />
-                        ) : (
-                          <Clock className="size-3" />
-                        )}
-                        {status}
+                        <StatusIcon className="size-3" />
+                        {meta.label}
                       </span>
                     </div>
                     <p className="mt-0.5 text-xs text-muted-foreground">
