@@ -55,13 +55,19 @@ export default function BookingPanel({
   available,
 }: BookingPanelProps) {
   const targetHref = serviceId ? `/browse-services/${serviceId}/booking` : "#";
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const token = session?.session?.token;
+  const accountType = (session?.user as { accountType?: string } | undefined)
+    ?.accountType;
+  /** Only couple accounts may look up (and create) bookings server-side. */
+  const isCustomer = accountType === "customer";
   const [bookingStatus, setBookingStatus] = useState<TBookingStatus | null>(null);
 
   useEffect(() => {
     const userId = session?.user?.id;
-    if (!userId || !serviceId) return;
+    // GET /bookings is customer-only server-side (verifyCustomer), so skip the
+    // lookup for vendors/admins instead of triggering a 403 "Forbidden".
+    if (!userId || !serviceId || !isCustomer) return;
 
     let cancelled = false;
 
@@ -90,7 +96,7 @@ export default function BookingPanel({
     return () => {
       cancelled = true;
     };
-  }, [session?.user?.id, serviceId]);
+  }, [session?.user?.id, token, serviceId, isCustomer]);
 
   return (
     <div className="overflow-hidden rounded-3xl border border-primary/20 bg-card shadow-lg shadow-primary/5">
@@ -161,6 +167,30 @@ export default function BookingPanel({
             className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
           >
             Service Unavailable
+          </span>
+        ) : isPending ? (
+          /* Avoid flashing a sign-in prompt while the session resolves. */
+          <span
+            aria-hidden="true"
+            className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-muted px-5"
+          >
+            <span className="h-3 w-44 animate-pulse rounded-full bg-muted-foreground/20" />
+          </span>
+        ) : !session ? (
+          <Link
+            href="/sign-in"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <Sparkles className="size-4" />
+            Sign in to request this service
+          </Link>
+        ) : !isCustomer ? (
+          /* Vendors and admins can't book — POST /bookings rejects them too. */
+          <span
+            aria-disabled="true"
+            className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-muted px-5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            Sign in as a couple to request this service
           </span>
         ) : (
           <Link
