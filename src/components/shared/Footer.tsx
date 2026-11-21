@@ -86,7 +86,7 @@ const NAV_CATEGORIES = [
     title: "Platform & Account",
     links: [
       { label: "Home", href: "/" },
-      { label: "About WedPlan", href: "/about-us" },
+      { label: "Why Choose Us", href: "/#why-choose-us" },
       { label: "Dashboard", href: "/dashboard" },
       { label: "Vendor Membership", href: "/dashboard/vendor/subscription" },
       { label: "Sign In", href: "/sign-in" },

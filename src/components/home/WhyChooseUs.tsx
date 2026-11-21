@@ -95,7 +95,10 @@ const METRICS = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="relative w-full py-20 lg:py-28 bg-white dark:bg-[#151013] overflow-hidden border-t border-[#D2D3D0]/60 dark:border-[#423940]/60">
+    <section
+      id="why-choose-us"
+      className="scroll-mt-20 relative w-full py-20 lg:py-28 bg-white dark:bg-[#151013] overflow-hidden border-t border-[#D2D3D0]/60 dark:border-[#423940]/60"
+    >
       {/* Ambient background glows */}
       <div className="pointer-events-none absolute top-1/4 -left-40 size-[32rem] rounded-full bg-[#99616E]/10 blur-3xl" />
       <div className="pointer-events-none absolute bottom-1/4 -right-40 size-[32rem] rounded-full bg-[#C4B6D0]/20 blur-3xl" />
@@ -113,8 +116,9 @@ export default function WhyChooseUs() {
           </h2>
 
           <p className="text-sm sm:text-base leading-relaxed text-[#756770] dark:text-[#A797A2] max-w-2xl">
-            Planning your once-in-a-lifetime celebration should feel inspiring, not stressful.
-            Here is how WedPlan transforms months of wedding coordination into a seamless, joyful journey.
+            Planning your once-in-a-lifetime celebration should feel inspiring,
+            not stressful. Here is how WedPlan transforms months of wedding
+            coordination into a seamless, joyful journey.
           </p>
         </div>
 
@@ -213,7 +217,8 @@ export default function WhyChooseUs() {
                 Ready to plan the wedding you&apos;ve always envisioned?
               </h3>
               <p className="text-sm text-white/80 leading-relaxed">
-                Connect with passionate vendors, book your favorite date, and create memories that endure a lifetime.
+                Connect with passionate vendors, book your favorite date, and
+                create memories that endure a lifetime.
               </p>
             </div>
 
@@ -234,7 +239,6 @@ export default function WhyChooseUs() {
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );
