@@ -39,7 +39,7 @@ function getBookingStatus(
 
   if (normalized === "pending") return "pending";
   if (normalized === "accepted") return "accepted";
-  if (normalized === "declined") return "declined";
+  if (normalized === "declined" || normalized === "rejected") return "declined";
 
   return null;
 }

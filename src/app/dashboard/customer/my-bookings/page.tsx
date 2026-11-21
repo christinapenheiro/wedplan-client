@@ -95,7 +95,7 @@ function getBookingStatus(booking: IBookingRecord): BookingStatus {
   ).toLowerCase();
 
   if (raw === "accepted") return "accepted";
-  if (raw === "declined") return "declined";
+  if (raw === "declined" || raw === "rejected") return "declined";
   return "pending";
 }
 
