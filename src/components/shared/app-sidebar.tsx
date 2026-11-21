@@ -76,6 +76,11 @@ const VENDOR_NAV_ITEMS = [
     url: "/dashboard/vendor/subscription",
     icon: CreditCard,
   },
+  {
+    title: "Profile Settings",
+    url: "/dashboard/vendor/profile-settings",
+    icon: UserCog,
+  },
 ];
 
 const CUSTOMER_NAV_ITEMS = [
@@ -116,6 +121,11 @@ const ADMIN_NAV_ITEMS = [
     title: "Transactions",
     url: "/dashboard/admin/transactions",
     icon: Receipt,
+  },
+  {
+    title: "Profile Settings",
+    url: "/dashboard/admin/profile-settings",
+    icon: UserCog,
   },
 ];
 

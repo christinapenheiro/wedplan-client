@@ -83,6 +83,21 @@ export default function Navbar() {
     { label: "About Us", href: "/about-us" },
   ];
 
+  // Resolve role-based dashboard profile settings URL
+  const userAccountType = (
+    session?.user as { accountType?: string } | undefined
+  )?.accountType?.toLowerCase();
+  const userRole = (
+    session?.user as { role?: string } | undefined
+  )?.role?.toLowerCase();
+
+  const profileSettingsUrl =
+    userRole === "admin"
+      ? "/dashboard/admin/profile-settings"
+      : userAccountType === "vendor"
+      ? "/dashboard/vendor/profile-settings"
+      : "/dashboard/customer/profile-settings";
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#D2D3D0] dark:border-[#423940] bg-[#FAF8FA]/90 dark:bg-[#191417]/90 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -209,7 +224,7 @@ export default function Navbar() {
 
                 {/* Update Option */}
                 <DropdownMenuItem
-                  onClick={() => router.push("/profile")}
+                  onClick={() => router.push(profileSettingsUrl)}
                   className="flex items-center gap-2.5 px-3 py-2 text-sm text-[#2A1F25] dark:text-[#F5EFF3] hover:text-[#99616E] hover:bg-[#99616E]/5 rounded-lg transition-colors cursor-pointer"
                 >
                   <UserPen className="size-4 text-[#99616E]" />
@@ -337,7 +352,7 @@ export default function Navbar() {
 
                 <div className="flex flex-col gap-1">
                   <Link
-                    href="/profile"
+                    href={profileSettingsUrl}
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#756770] hover:text-[#99616E] hover:bg-[#F2EEF3]"
                   >

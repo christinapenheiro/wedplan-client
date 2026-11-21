@@ -17,10 +17,12 @@ export const authClient = createAuthClient({
       user: {
         accountType: {
           type: "string",
+          required: false,
         },
-        // businessName: {
-        //   type: "string",
-        // }
+        businessName: {
+          type: "string",
+          required: false,
+        },
       },
     }),
     adminClient(),
