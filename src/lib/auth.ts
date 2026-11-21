@@ -9,6 +9,15 @@ const db = client.db("wedplan");
 // const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_CLIENT_URL,
+  trustedOrigins: [
+    process.env.BETTER_AUTH_URL,
+    process.env.NEXT_PUBLIC_CLIENT_URL,
+    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+    ...(process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? [`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`]
+      : []),
+  ].filter(Boolean) as string[],
   emailAndPassword: {
     enabled: true,
     // sendResetPassword: async ({ user, url, token }, request) => {
