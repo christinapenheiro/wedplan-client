@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   ArrowLeft,
   BadgeCheck,
@@ -8,7 +9,6 @@ import {
   Images,
   Mail,
   MapPin,
-  Sparkles,
   Store,
 } from "lucide-react";
 
@@ -22,6 +22,11 @@ import { headers } from "next/headers";
 
 interface ServiceDetailsPageProps {
   params: Promise<{ id: string }>;
+}
+
+/** Validates that an ID matches the 24-character hexadecimal MongoDB ObjectId pattern. */
+function isValidObjectId(id: string | undefined): boolean {
+  return typeof id === "string" && /^[0-9a-fA-F]{24}$/.test(id);
 }
 
 /** Formats a numeric price as whole-dollar USD, falling back to an em dash. */
@@ -112,6 +117,11 @@ export async function generateMetadata({
   params,
 }: ServiceDetailsPageProps): Promise<Metadata> {
   const { id } = await params;
+
+  if (!isValidObjectId(id)) {
+    return { title: "Service not found — WedPlan" };
+  }
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -119,8 +129,9 @@ export async function generateMetadata({
 
   try {
     const service = await clientApi.get<IService>(
-      `/services/${encodeURIComponent(id)}`
-    ,token as string);
+      `/services/${encodeURIComponent(id)}`,
+      token as string
+    );
 
     return {
       title: `${service.title || "Service"} — WedPlan`,
@@ -135,44 +146,26 @@ export default async function ServiceDetailsPage({
   params,
 }: ServiceDetailsPageProps) {
   const { id } = await params;
-   const session = await auth.api.getSession({
-     headers: await headers(),
-   });
-   const token = session?.session?.token;
+
+  if (!isValidObjectId(id)) {
+    notFound();
+  }
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const token = session?.session?.token;
 
   let service: IService | null = null;
 
   try {
-    service = await clientApi.get<IService>(`/services/${id}`,token as string);
-  } catch (error) {
-    console.error("Failed to fetch service details:", error);
+    service = await clientApi.get<IService>(`/services/${id}`, token as string);
+  } catch {
+    service = null;
   }
 
-  if (!service) {
-    return (
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6">
-        <div className="flex size-20 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <Sparkles className="size-9" />
-        </div>
-        <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-          Service unavailable
-        </p>
-        <h1 className="mt-2 font-serif text-3xl tracking-wide text-foreground sm:text-4xl">
-          We couldn&apos;t find that service
-        </h1>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-          The listing may have been removed or is no longer accepting enquiries.
-          Explore the directory to discover other trusted wedding professionals.
-        </p>
-        <Link
-          href="/browse-services"
-          className="mt-7 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
-        >
-          <ArrowLeft className="size-4" />
-          Back to directory
-        </Link>
-      </div>
-    );
+  if (!service || !service._id) {
+    notFound();
   }
 
   const images = service.imageUrls ?? [];
