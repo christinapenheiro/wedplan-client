@@ -37,9 +37,16 @@ const PREMIUM_FEATURES = [
 ];
 
 export default function VendorSubscriptionPage() {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending, refetch } = authClient.useSession();
   const token = session?.session?.token;
   const [isUpgrading, setIsUpgrading] = React.useState(false);
+
+  // The user document can change server-side (Stripe webhook / verify-payment),
+  // so bypass the JWT cookie cache once on mount to show the real plan.
+  React.useEffect(() => {
+    if (isPending) return;
+    refetch({ query: { disableCookieCache: true } });
+  }, [isPending, refetch]);
 
   // The account is created on the Free plan, so anything other than "premium"
   // (including a still-loading session) falls back to Free.
@@ -113,7 +120,7 @@ export default function VendorSubscriptionPage() {
         <p className="text-xs text-muted-foreground">
           You are currently on the{" "}
           <span className="font-semibold text-foreground">
-            {isPremium ? "Premium" : "Free"}
+            {isPending ? "…" : isPremium ? "Premium" : "Free"}
           </span>{" "}
           plan.
         </p>
@@ -141,7 +148,7 @@ export default function VendorSubscriptionPage() {
               <div className="flex size-12 items-center justify-center rounded-2xl border border-secondary/50 bg-secondary/20 text-primary">
                 <Sparkles className="size-5" />
               </div>
-              {!isPremium && (
+              {!isPremium && !isPending && (
                 <span className="inline-flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
                   <Check className="size-3" />
                   Current plan
@@ -255,7 +262,7 @@ export default function VendorSubscriptionPage() {
             <CardFooter className="relative flex-col items-stretch gap-2 border-t border-border pt-5">
               <Button
                 className="group w-full gap-2 bg-gradient-to-r from-primary to-[#B98695] text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30 hover:brightness-105"
-                disabled={isPremium || isUpgrading}
+                disabled={isPremium || isUpgrading || isPending}
                 onClick={handleUpgradePremium}
               >
                 {isPremium ? (
