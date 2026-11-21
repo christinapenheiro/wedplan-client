@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -165,7 +166,8 @@ const BrowseServicesPage = async () => {
           <div className="mt-6 flex flex-wrap items-center gap-2.5">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
               <Sparkles className="size-3.5" />
-              {services.length} {services.length === 1 ? "service" : "services"} available
+              {services.length} {services.length === 1 ? "service" : "services"}{" "}
+              available
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground backdrop-blur-sm">
               Hand-picked professionals
@@ -256,8 +258,8 @@ const BrowseServicesPage = async () => {
               No services listed yet
             </h2>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Our vendors are still preparing their packages. Check back soon
-              to discover the perfect match for your wedding.
+              Our vendors are still preparing their packages. Check back soon to
+              discover the perfect match for your wedding.
             </p>
           </div>
         )

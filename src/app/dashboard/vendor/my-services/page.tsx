@@ -98,8 +98,9 @@ const STATUS_FILTERS: ("All" | ServiceStatus)[] = [
 
 /** Normalises a stored status — records saved without one are treated as awaiting review. */
 function getStatus(service: IService): ServiceStatus {
-  if (service.status === "active") return "active";
-  if (service.status === "declined") return "declined";
+  const s = String(service.status ?? "").toLowerCase();
+  if (s === "active") return "active";
+  if (s === "declined" || s === "rejected") return "declined";
   return "pending";
 }
 
@@ -120,7 +121,7 @@ function statusMeta(status: ServiceStatus) {
       icon: XCircle,
       label: "Declined",
       className: "bg-destructive/10 text-destructive border-destructive/30",
-      helper: "Not approved by admin — update the listing and resubmit it.",
+      helper: "Declined by admin — this service is closed and read-only.",
     };
   }
 
@@ -269,6 +270,7 @@ export default function VendorMyServicesPage() {
 
   /** Persists an availability flip, reverting the optimistic update if the API fails. */
   const toggleAvailability = async (service: IService) => {
+    if (getStatus(service) === "declined") return;
     if (isUpdating(service)) return;
 
     const next = !isAvailable(service);
@@ -314,6 +316,7 @@ export default function VendorMyServicesPage() {
 
   /** Deletes a service through the API, then drops it from the list. */
   const handleDelete = async (service: IService) => {
+    if (getStatus(service) === "declined") return;
     if (isUpdating(service)) return;
 
     setUpdatingIds((prev) => [...prev, service._id]);
@@ -355,7 +358,7 @@ export default function VendorMyServicesPage() {
     price: number;
     description: string;
   }): Promise<boolean> => {
-    if (!editing) return false;
+    if (!editing || getStatus(editing) === "declined") return false;
 
     const id = editing._id;
 
@@ -586,6 +589,7 @@ export default function VendorMyServicesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {visibleServices.map((service) => {
             const status = getStatus(service);
+            const isDeclined = status === "declined";
             const meta = statusMeta(status);
             const StatusIcon = meta.icon;
             const CategoryIcon =
@@ -598,7 +602,12 @@ export default function VendorMyServicesPage() {
             return (
               <Card
                 key={service._id}
-                className="group flex flex-col overflow-hidden border-border shadow-sm transition-shadow hover:shadow-md"
+                className={cn(
+                  "group flex flex-col overflow-hidden border-border shadow-sm transition-shadow",
+                  isDeclined
+                    ? "border-border/70 bg-muted/10 opacity-90"
+                    : "hover:shadow-md"
+                )}
               >
                 {/* Cover image */}
                 <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
@@ -684,11 +693,12 @@ export default function VendorMyServicesPage() {
                       aria-checked={available}
                       aria-busy={updating}
                       aria-label={`Toggle availability for ${service.title}`}
-                      disabled={updating}
-                      onClick={() => toggleAvailability(service)}
+                      disabled={updating || isDeclined}
+                      onClick={() => !isDeclined && toggleAvailability(service)}
                       className={cn(
                         "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border transition-colors outline-none",
                         "focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-60",
+                        isDeclined && "cursor-not-allowed opacity-50",
                         available
                           ? "border-emerald-600 bg-emerald-600"
                           : "border-border bg-muted"
@@ -732,8 +742,8 @@ export default function VendorMyServicesPage() {
                         <Button
                           variant="destructive"
                           size="xs"
-                          disabled={updating}
-                          onClick={() => handleDelete(service)}
+                          disabled={updating || isDeclined}
+                          onClick={() => !isDeclined && handleDelete(service)}
                           className="gap-1"
                         >
                           {updating && (
@@ -744,34 +754,51 @@ export default function VendorMyServicesPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 gap-1.5"
-                        onClick={() => setViewingId(service._id)}
-                      >
-                        <Eye className="size-3.5" />
-                        View
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 gap-1.5"
-                        onClick={() => setEditingId(service._id)}
-                      >
-                        <Pencil className="size-3.5" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={`Delete ${service.title}`}
-                        className="text-destructive hover:bg-destructive/10"
-                        onClick={() => setPendingDeleteId(service._id)}
-                      >
-                        <Trash2 className="size-3.5" />
-                      </Button>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 gap-1.5"
+                          onClick={() => setViewingId(service._id)}
+                        >
+                          <Eye className="size-3.5" />
+                          View
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={isDeclined}
+                          className={cn(
+                            "flex-1 gap-1.5",
+                            isDeclined && "opacity-50 cursor-not-allowed text-muted-foreground"
+                          )}
+                          title={isDeclined ? "Declined services cannot be edited" : "Edit service"}
+                          onClick={() => !isDeclined && setEditingId(service._id)}
+                        >
+                          <Pencil className="size-3.5" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          disabled={isDeclined}
+                          aria-label={`Delete ${service.title}`}
+                          className={cn(
+                            "text-destructive hover:bg-destructive/10",
+                            isDeclined && "opacity-40 cursor-not-allowed hover:bg-transparent"
+                          )}
+                          title={isDeclined ? "Declined services cannot be deleted" : "Delete service"}
+                          onClick={() => !isDeclined && setPendingDeleteId(service._id)}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                      {isDeclined && (
+                        <p className="text-[10px] text-destructive/80 italic text-center pt-0.5">
+                          Declined by admin • Modification disabled
+                        </p>
+                      )}
                     </div>
                   )}
                 </CardContent>
@@ -795,7 +822,7 @@ export default function VendorMyServicesPage() {
       )}
 
       {/* Edit panel */}
-      {editing && (
+      {editing && getStatus(editing) !== "declined" && (
         <EditServiceSheet
           key={`edit-${editing._id}`}
           service={editing}
@@ -867,6 +894,7 @@ function ServiceDetailsSheet({
   const images = service.imageUrls ?? [];
   const available = service.isAvailable !== false;
   const status = getStatus(service);
+  const isDeclined = status === "declined";
   const meta = statusMeta(status);
   const StatusIcon = meta.icon;
   const CategoryIcon = CATEGORY_ICONS[service.category] ?? ClipboardList;
@@ -989,11 +1017,15 @@ function ServiceDetailsSheet({
 
         <SheetFooter className="border-t border-border">
           <Button
-            className="gap-2 bg-[#99616E] hover:bg-[#824E5B] text-white"
-            onClick={onEdit}
+            disabled={isDeclined}
+            className={cn(
+              "gap-2 bg-[#99616E] hover:bg-[#824E5B] text-white",
+              isDeclined && "opacity-50 cursor-not-allowed pointer-events-none"
+            )}
+            onClick={isDeclined ? undefined : onEdit}
           >
             <Pencil className="size-4" />
-            Edit service
+            {isDeclined ? "Editing disabled" : "Edit service"}
           </Button>
           <Button variant="outline" onClick={onClose}>
             Close
