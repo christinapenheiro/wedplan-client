@@ -1,14 +1,12 @@
 export const dynamic = "force-dynamic";
+
 import Image from "next/image";
 import Link from "next/link";
 import {
   AlertCircle,
   ArrowUpRight,
-  ChevronDown,
+  FilterX,
   Images,
-  MapPin,
-  Search,
-  SlidersHorizontal,
   Sparkles,
 } from "lucide-react";
 
@@ -16,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { clientApi } from "@/lib/api/clientApi";
 import { CATEGORY_META } from "@/lib/service-categories";
 import type { IService } from "@/lib/types";
+import { DirectoryFilters } from "./directory-filters";
 
 /** Formats a numeric price as whole-dollar USD, falling back to an em dash. */
 function formatPrice(price: number | undefined) {
@@ -127,21 +126,47 @@ function ServiceCard({ service }: { service: IService }) {
   );
 }
 
-const BrowseServicesPage = async () => {
+interface PageProps {
+  searchParams: Promise<{
+    search?: string;
+    category?: string;
+    location?: string;
+    sort?: string;
+  }>;
+}
+
+const BrowseServicesPage = async ({ searchParams }: PageProps) => {
+  const params = (await searchParams) ?? {};
+  const search = params.search?.trim() || "";
+  const category = params.category?.trim() || "";
+  const location = params.location?.trim() || "";
+  const sort = params.sort?.trim() || "newest";
+
   let services: IService[] = [];
   let hasError = false;
 
   try {
-    const res: IService[] = await clientApi.get(`/services?status=active`);
+    const query = new URLSearchParams();
+    query.set("status", "active");
+    if (search) query.set("search", search);
+    if (category && category !== "all") query.set("category", category);
+    if (location) query.set("location", location);
+    if (sort) query.set("sort", sort);
+
+    const res: IService[] = await clientApi.get(`/services?${query.toString()}`);
     services = res ?? [];
   } catch (error) {
     hasError = true;
     console.error("Failed to fetch services:", error);
   }
 
+  const hasFiltersApplied = Boolean(
+    search || (category && category !== "all") || location || (sort && sort !== "newest")
+  );
+
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* Heading */}
+      {/* Header & Filter Controls */}
       <header className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-[#F5F1F6] via-[#FAF8FA] to-[#EFE7F1] px-6 py-8 sm:px-10 sm:py-10 dark:from-[#2E252C] dark:via-[#221B20] dark:to-[#3B3040]">
         <div className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-primary/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-10 size-56 rounded-full bg-secondary/30 blur-3xl" />
@@ -167,64 +192,22 @@ const BrowseServicesPage = async () => {
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
               <Sparkles className="size-3.5" />
               {services.length} {services.length === 1 ? "service" : "services"}{" "}
-              available
+              {hasFiltersApplied ? "matching criteria" : "available"}
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground backdrop-blur-sm">
               Hand-picked professionals
             </span>
           </div>
 
-          {/* Filter bar — UI only */}
-          <div className="mt-6 rounded-2xl border border-border/70 bg-background/70 p-2.5 shadow-lg shadow-primary/5 backdrop-blur-md sm:p-3">
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_11.5rem_11.5rem_auto] lg:items-center">
-              {/* Search by name */}
-              <div className="flex h-12 items-center gap-2.5 rounded-xl bg-card/80 px-3.5 ring-1 ring-border/60 transition focus-within:ring-2 focus-within:ring-primary/40 sm:col-span-2 sm:h-[3.25rem] lg:col-span-1 lg:h-11 lg:px-3">
-                <Search className="size-4 shrink-0 text-primary sm:size-[18px] lg:size-4" />
-                <input
-                  type="text"
-                  aria-label="Search services by name"
-                  placeholder="Search services by name…"
-                  className="h-full w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground/70 sm:text-base lg:text-sm"
-                />
-              </div>
-
-              {/* Category filter */}
-              <div className="relative flex h-12 items-center rounded-xl bg-card/80 ring-1 ring-border/60 transition focus-within:ring-2 focus-within:ring-primary/40 sm:h-[3.25rem] lg:h-11">
-                <SlidersHorizontal className="pointer-events-none absolute left-3.5 size-4 shrink-0 text-primary sm:size-[18px] lg:left-3 lg:size-4" />
-                <select
-                  aria-label="Filter by category"
-                  defaultValue=""
-                  className="h-full w-full appearance-none bg-transparent pl-10 pr-9 text-[15px] text-foreground outline-none sm:text-base lg:pl-9 lg:text-sm"
-                >
-                  <option value="">All categories</option>
-                  {Object.entries(CATEGORY_META).map(([value, meta]) => (
-                    <option key={value} value={value}>
-                      {meta.label}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3.5 size-3.5 text-muted-foreground sm:size-4 lg:right-3 lg:size-3.5" />
-              </div>
-
-              {/* Location filter */}
-              <div className="flex h-12 items-center gap-2.5 rounded-xl bg-card/80 px-3.5 ring-1 ring-border/60 transition focus-within:ring-2 focus-within:ring-primary/40 sm:h-[3.25rem] lg:h-11 lg:px-3">
-                <MapPin className="size-4 shrink-0 text-primary sm:size-[18px] lg:size-4" />
-                <input
-                  type="text"
-                  aria-label="Filter by location"
-                  placeholder="Location or city"
-                  className="h-full w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground/70 sm:text-base lg:text-sm"
-                />
-              </div>
-
-              <button
-                type="button"
-                className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 sm:col-span-2 sm:h-[3.25rem] lg:col-span-1 lg:h-11 lg:px-5"
-              >
-                <Search className="size-3.5 sm:size-4 lg:size-3.5" />
-                Search
-              </button>
-            </div>
+          {/* Dynamic Interactive Filter & Sorting Bar */}
+          <div className="mt-6">
+            <DirectoryFilters
+              initialSearch={search}
+              initialCategory={category}
+              initialLocation={location}
+              initialSort={sort}
+              totalResults={services.length}
+            />
           </div>
         </div>
       </header>
@@ -252,15 +235,33 @@ const BrowseServicesPage = async () => {
         !hasError && (
           <div className="mt-10 flex flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-card/60 px-6 py-20 text-center">
             <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <Sparkles className="size-7" />
+              {hasFiltersApplied ? (
+                <FilterX className="size-7" />
+              ) : (
+                <Sparkles className="size-7" />
+              )}
             </div>
             <h2 className="mt-5 font-serif text-2xl tracking-wide text-foreground">
-              No services listed yet
+              {hasFiltersApplied
+                ? "No matching services found"
+                : "No services listed yet"}
             </h2>
             <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-              Our vendors are still preparing their packages. Check back soon to
-              discover the perfect match for your wedding.
+              {hasFiltersApplied
+                ? "We couldn't find any services matching your search or filters. Try adjusting your keywords or clearing selected filters."
+                : "Our vendors are still preparing their packages. Check back soon to discover the perfect match for your wedding."}
             </p>
+
+            {hasFiltersApplied && (
+              <div className="mt-6">
+                <Link
+                  href="/browse-services"
+                  className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-sm transition hover:bg-primary/90"
+                >
+                  Clear all filters
+                </Link>
+              </div>
+            )}
           </div>
         )
       )}
