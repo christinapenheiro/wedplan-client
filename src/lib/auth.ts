@@ -13,11 +13,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     process.env.BETTER_AUTH_URL,
     process.env.NEXT_PUBLIC_CLIENT_URL,
-    ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
-    ...(process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? [`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`]
-      : []),
-  ].filter(Boolean) as string[],
+  ] as string[],
   emailAndPassword: {
     enabled: true,
     // sendResetPassword: async ({ user, url, token }, request) => {
@@ -50,7 +46,7 @@ export const auth = betterAuth({
       },
       /** Default plan; not user-editable at registration. */
       subscriptionPlan: {
-        type: ["free","premium"],
+        type: ["free", "premium"],
         required: false,
         defaultValue: "free",
         input: false,
@@ -81,12 +77,10 @@ export const auth = betterAuth({
   }),
   plugins: [
     jwt(),
-  admin(
-    {
-      defaultRole: "user"
-    }
-  ),
-],
+    admin({
+      defaultRole: "user",
+    }),
+  ],
   session: {
     cookieCache: {
       enabled: true,
