@@ -193,6 +193,7 @@ export default function VendorAddServicePage() {
         vendorEmail: userEmail,
         status: "pending", // New services start as pending for admin review
         vendorName: session?.user?.name || undefined,
+        location,
       });
       // setStatus("success");
       toast.add({
