@@ -4,7 +4,17 @@ import { mongodbAdapter } from "@better-auth/mongo-adapter";
 // import { Resend } from "resend";
 import { admin } from "better-auth/plugins";
 
-const client = new MongoClient(process.env.MONGODB_URI as string);
+const globalForMongo = globalThis as unknown as { mongoClient?: MongoClient };
+
+const client =
+  globalForMongo.mongoClient ??
+  new MongoClient(process.env.MONGODB_URI as string, {
+    maxPoolSize: 5, // free Atlas has a connection limit
+    serverSelectionTimeoutMS: 10000, // fail fast instead of waiting 30s
+    maxIdleTimeMS: 5000, // drop idle connections before they go stale
+  });
+
+globalForMongo.mongoClient = client;
 const db = client.db("wedplan");
 // const resend = new Resend(process.env.RESEND_API_KEY);
 
