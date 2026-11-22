@@ -152,7 +152,6 @@ export default function SignUpPage() {
         signUpPayload,
       );
 
-      console.log(data, error);
 
       if (error) {
         toast.add({
