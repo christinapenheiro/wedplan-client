@@ -39,14 +39,14 @@ export default function UnauthorizedPage() {
 
         {/* Actions */}
         <div className="flex w-full flex-col gap-3 sm:flex-row">
-          <Link
+          <Link prefetch={false}
             href="/"
             className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#99616E] px-6 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#824E5B] hover:shadow-md"
           >
             <Home className="size-4" />
             Go Home
           </Link>
-          <Link
+          <Link prefetch={false}
             href="/sign-in"
             className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#D2D3D0] bg-white/80 px-6 text-sm font-semibold text-[#2A1F25] shadow-sm transition-all hover:border-[#C4B6D0] hover:bg-[#F2EEF3] dark:border-[#423940] dark:bg-[#221B20]/80 dark:text-[#F5EFF3] dark:hover:bg-[#2E252C]"
           >
@@ -58,7 +58,7 @@ export default function UnauthorizedPage() {
         {/* Footer note */}
         <p className="text-xs text-[#756770] dark:text-[#A797A2]">
           If you believe this is a mistake, please{" "}
-          <Link
+          <Link prefetch={false}
             href="#"
             className="font-medium text-[#99616E] hover:underline underline-offset-4"
           >

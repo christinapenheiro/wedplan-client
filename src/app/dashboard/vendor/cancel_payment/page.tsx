@@ -97,7 +97,7 @@ export default function CancelPaymentPage() {
               <RefreshCw className="size-4" />
               Try Again
             </button>
-            <Link
+            <Link prefetch={false}
               href="/dashboard/vendor"
               className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition-all hover:bg-accent"
             >
@@ -109,7 +109,7 @@ export default function CancelPaymentPage() {
           {/* Help link */}
           <p className="text-xs text-muted-foreground">
             Having trouble?{" "}
-            <Link
+            <Link prefetch={false}
               href="#"
               className="inline-flex items-center gap-0.5 font-medium text-[#99616E] hover:underline underline-offset-4"
             >

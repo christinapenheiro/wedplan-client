@@ -408,7 +408,7 @@ export default function VendorMyServicesPage() {
             approval status
           </p>
         </div>
-        <Link
+        <Link prefetch={false}
           href="/dashboard/vendor/add-service"
           className={cn(
             buttonVariants({ variant: "default" }),
@@ -569,7 +569,7 @@ export default function VendorMyServicesPage() {
                 Clear filters
               </Button>
             ) : (
-              <Link
+              <Link prefetch={false}
                 href="/dashboard/vendor/add-service"
                 className={cn(
                   buttonVariants({ variant: "default" }),

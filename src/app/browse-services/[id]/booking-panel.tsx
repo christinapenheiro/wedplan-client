@@ -177,7 +177,7 @@ export default function BookingPanel({
             <span className="h-3 w-44 animate-pulse rounded-full bg-muted-foreground/20" />
           </span>
         ) : !session ? (
-          <Link
+          <Link prefetch={false}
             href="/sign-in"
             className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
@@ -193,7 +193,7 @@ export default function BookingPanel({
             Sign in as a couple to request this service
           </span>
         ) : (
-          <Link
+          <Link prefetch={false}
             href={targetHref}
             className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >

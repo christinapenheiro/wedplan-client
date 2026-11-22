@@ -112,7 +112,7 @@ export default function Navbar() {
   const publicNavLinks = [
     { label: "Home", href: "/" },
     { label: "Browse", href: "/browse-services" },
-    { label: "Why Choose Us", href: "/#why-choose-us" },
+    { label: "Why Choose Us", href: "/#why-choose-us"},
   ];
 
   // Resolve role-based dashboard profile settings URL
@@ -134,7 +134,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-[#D2D3D0] dark:border-[#423940] bg-[#FAF8FA]/90 dark:bg-[#191417]/90 backdrop-blur-md transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo & Title */}
-        <Link
+        <Link prefetch={false}
           href="/"
           className="flex items-center gap-2 group outline-none"
           aria-label="WedPlan Home"
@@ -155,7 +155,7 @@ export default function Navbar() {
           {publicNavLinks.map((link) => {
             const active = isActive(link.href);
             return (
-              <Link
+              <Link prefetch={false}
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
@@ -172,7 +172,7 @@ export default function Navbar() {
 
           {/* Conditional Dashboard Link for authenticated users */}
           {session && (
-            <Link
+            <Link prefetch={false}
               href="/dashboard"
               className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 isActive("/dashboard")
@@ -333,7 +333,7 @@ export default function Navbar() {
             {publicNavLinks.map((link) => {
               const active = isActive(link.href);
               return (
-                <Link
+                <Link prefetch={false}
                   key={link.href}
                   href={link.href}
                   onClick={(e) => {
@@ -353,7 +353,7 @@ export default function Navbar() {
 
             {/* Mobile Dashboard Link when authenticated */}
             {session && (
-              <Link
+              <Link prefetch={false}
                 href="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
@@ -395,7 +395,7 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <Link
+                  <Link prefetch={false}
                     href={profileSettingsUrl}
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#756770] hover:text-[#99616E] hover:bg-[#F2EEF3]"

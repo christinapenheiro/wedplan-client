@@ -40,14 +40,14 @@ export default function NotFound() {
 
         {/* Action buttons */}
         <div className="flex w-full flex-col gap-3 sm:flex-row">
-          <Link
+          <Link prefetch={false}
             href="/"
             className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#99616E] px-6 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#824E5B] hover:shadow-md"
           >
             <Home className="size-4" />
             Go Home
           </Link>
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#D2D3D0] bg-white/80 px-6 text-sm font-semibold text-[#2A1F25] shadow-sm transition-all hover:border-[#C4B6D0] hover:bg-[#F2EEF3] dark:border-[#423940] dark:bg-[#221B20]/80 dark:text-[#F5EFF3] dark:hover:bg-[#2E252C]"
           >
@@ -58,21 +58,21 @@ export default function NotFound() {
 
         {/* Helpful links */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-[#756770] dark:text-[#A797A2]">
-          <Link
+          <Link prefetch={false}
             href="/dashboard"
             className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors"
           >
             Dashboard
           </Link>
           <span className="text-[#D2D3D0]">·</span>
-          <Link
+          <Link prefetch={false}
             href="/sign-in"
             className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors"
           >
             Sign In
           </Link>
           <span className="text-[#D2D3D0]">·</span>
-          <Link
+          <Link prefetch={false}
             href="/sign-up"
             className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors"
           >

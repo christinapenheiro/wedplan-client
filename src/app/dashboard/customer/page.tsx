@@ -238,7 +238,7 @@ export default function CustomerDashboardPage() {
             <span>Refresh</span>
           </Button>
 
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className={
               buttonVariants({ variant: "default" }) +
@@ -315,7 +315,7 @@ export default function CustomerDashboardPage() {
               Your recent booking requests with their current updated status
             </CardDescription>
           </div>
-          <Link
+          <Link prefetch={false}
             href="/dashboard/customer/my-bookings"
             className={
               buttonVariants({ variant: "ghost", size: "sm" }) +
@@ -357,7 +357,7 @@ export default function CustomerDashboardPage() {
                 When you request a vendor service, your bookings will appear
                 here with their updated status.
               </p>
-              <Link
+              <Link prefetch={false}
                 href="/browse-services"
                 className={
                   buttonVariants({ variant: "outline", size: "sm" }) +

@@ -223,14 +223,14 @@ export default function WhyChooseUs() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-              <Link
+              <Link prefetch={false}
                 href="/browse-services"
                 className="w-full sm:w-auto inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-7 text-xs font-semibold uppercase tracking-wider text-[#99616E] shadow-md transition-all hover:bg-[#FAF8FA] hover:shadow-lg cursor-pointer"
               >
                 <span>Browse Directory</span>
                 <ArrowRight className="size-4" />
               </Link>
-              <Link
+              <Link prefetch={false}
                 href="/sign-up"
                 className="w-full sm:w-auto inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 bg-white/10 hover:bg-white/20 px-7 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-xs transition-colors cursor-pointer"
               >

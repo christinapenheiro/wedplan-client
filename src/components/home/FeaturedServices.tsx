@@ -133,7 +133,7 @@ export default function FeaturedServices({ services }: FeaturedServicesProps) {
               "Verified Vendor";
 
             return (
-              <Link
+              <Link prefetch={false}
                 key={service._id ?? `service-${index}`}
                 href={href}
                 className="group relative flex flex-col overflow-hidden rounded-3xl border border-[#D2D3D0]/80 dark:border-[#423940] bg-white dark:bg-[#221B20] shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#99616E]/40 hover:shadow-xl hover:shadow-[#99616E]/10 outline-none"
@@ -236,7 +236,7 @@ export default function FeaturedServices({ services }: FeaturedServicesProps) {
 
         {/* View All CTA */}
         <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#99616E] hover:bg-[#824E5B] px-8 text-xs font-semibold uppercase tracking-wider text-white shadow-md shadow-[#99616E]/20 transition-all hover:shadow-lg hover:shadow-[#99616E]/30 cursor-pointer"
           >

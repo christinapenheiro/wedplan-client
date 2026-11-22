@@ -218,7 +218,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {/* Sidebar Header with WedPlan branding and Role Badge */}
       <SidebarHeader className="border-sidebar-border p-4">
         <div className="flex items-center gap-3">
-          <Link
+          <Link prefetch={false}
             href="/"
             className="flex items-center gap-2.5 group overflow-hidden"
             title="Return to website"
@@ -262,7 +262,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 return (
                   <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton
-                      render={<Link href={item.url} />}
+                      render={<Link prefetch={false} href={item.url} />}
                       isActive={isActive}
                       tooltip={item.title}
                       className={`gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors ${
@@ -296,7 +296,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={<Link href="/" />}
+                  render={<Link prefetch={false} href="/" />}
                   tooltip="Back to Website"
                   className="gap-3 rounded-lg px-2.5 py-2 text-sm text-foreground hover:bg-[#F2EEF3] dark:hover:bg-[#2A2328]"
                 >
@@ -306,7 +306,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  render={<Link href="/browse-services" />}
+                  render={<Link prefetch={false} href="/browse-services" />}
                   tooltip="Browse Services"
                   className="gap-3 rounded-lg px-2.5 py-2 text-sm text-foreground hover:bg-[#F2EEF3] dark:hover:bg-[#2A2328]"
                 >

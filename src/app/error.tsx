@@ -58,7 +58,7 @@ export default function ErrorBoundary({
             <RefreshCw className="size-4" />
             Try Again
           </button>
-          <Link
+          <Link prefetch={false}
             href="/"
             className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-[#D2D3D0] bg-white/80 px-6 text-sm font-semibold text-[#2A1F25] shadow-sm transition-all hover:border-[#C4B6D0] hover:bg-[#F2EEF3] dark:border-[#423940] dark:bg-[#221B20]/80 dark:text-[#F5EFF3] dark:hover:bg-[#2E252C]"
           >

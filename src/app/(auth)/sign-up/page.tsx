@@ -532,7 +532,7 @@ export default function SignUpPage() {
         <CardFooter className="justify-center border-t border-[#D2D3D0] dark:border-[#423940] pt-4">
           <p className="text-xs text-[#756770] dark:text-[#A797A2]">
             Already have an account?{" "}
-            <Link
+            <Link prefetch={false}
               href="/sign-in"
               className="font-medium text-[#99616E] hover:underline underline-offset-4"
             >

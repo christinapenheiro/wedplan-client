@@ -216,7 +216,7 @@ function SuccessPaymentContent() {
 
         {/* Next Actions */}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link
+          <Link prefetch={false}
             href="/dashboard/vendor"
             className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-[#B98695] px-4 text-xs font-semibold uppercase tracking-wider text-primary-foreground shadow-sm transition-all hover:brightness-105"
           >
@@ -224,7 +224,7 @@ function SuccessPaymentContent() {
             <ArrowRight className="size-4" />
           </Link>
 
-          <Link
+          <Link prefetch={false}
             href="/dashboard/vendor/add-service"
             className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-xs font-semibold uppercase tracking-wider text-foreground transition-all hover:bg-accent"
           >

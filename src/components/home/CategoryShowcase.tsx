@@ -123,7 +123,7 @@ export default function CategoryShowcase() {
             const targetUrl = `/browse-services?category=${cat.id}`;
 
             return (
-              <Link
+              <Link prefetch={false}
                 key={cat.id}
                 href={targetUrl}
                 className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-b from-card/90 via-card/70 to-card/40 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
@@ -179,7 +179,7 @@ export default function CategoryShowcase() {
 
         {/* Bottom CTA to browse all */}
         <div className="mt-10 flex justify-center">
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className="group inline-flex items-center gap-2.5 rounded-full border border-border/80 bg-background/80 px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-foreground shadow-xs backdrop-blur-sm transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
           >

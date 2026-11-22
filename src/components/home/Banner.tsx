@@ -103,7 +103,7 @@ export default function Banner() {
 
     const timer = setInterval(() => {
       setActiveCardIndex((prev) => (prev + 1) % BANNER_CARDS.length);
-    }, 3000);
+    }, 3200);
 
     return () => clearInterval(timer);
   }, [isHovered]);
@@ -235,7 +235,7 @@ export default function Banner() {
 
         {/* Action Buttons */}
         <div className="flex items-center justify-center gap-4">
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className="group relative inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#1F191D] hover:bg-[#99616E] text-white text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-[#99616E]/20"
           >
@@ -243,7 +243,7 @@ export default function Banner() {
             <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
 
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className="inline-flex items-center gap-1.5 px-6 py-3.5 border border-[#D2D3D0] hover:border-[#99616E] hover:text-[#99616E] text-[#231A20] dark:text-[#F8F5F7] text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase transition-colors"
           >

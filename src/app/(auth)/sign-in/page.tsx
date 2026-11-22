@@ -201,7 +201,7 @@ export default function SignInPage() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link
+                <Link prefetch={false}
                   href="#"
                   className="text-xs text-[#99616E] hover:underline underline-offset-4"
                   onClick={(e) => {
@@ -274,7 +274,7 @@ export default function SignInPage() {
         <CardFooter className="justify-center border-t border-[#D2D3D0] dark:border-[#423940] pt-4">
           <p className="text-xs text-[#756770] dark:text-[#A797A2]">
             Don&apos;t have an account?{" "}
-            <Link
+            <Link prefetch={false}
               href="/sign-up"
               className="font-medium text-[#99616E] hover:underline underline-offset-4"
             >

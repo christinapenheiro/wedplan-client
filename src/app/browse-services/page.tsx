@@ -36,7 +36,7 @@ function ServiceCard({ service }: { service: IService }) {
   const CategoryIcon = meta.icon;
 
   return (
-    <Link
+    <Link prefetch={false}
       href={`/browse-services/${service._id}`}
       className="group block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
@@ -254,7 +254,7 @@ const BrowseServicesPage = async ({ searchParams }: PageProps) => {
 
             {hasFiltersApplied && (
               <div className="mt-6">
-                <Link
+                <Link prefetch={false}
                   href="/browse-services"
                   className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-sm transition hover:bg-primary/90"
                 >

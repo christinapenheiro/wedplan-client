@@ -199,7 +199,7 @@ export default function VendorDashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2.5">
-          <Link
+          <Link prefetch={false}
             href="/dashboard/vendor/add-service"
             className={
               buttonVariants({ variant: "default" }) +
@@ -264,7 +264,7 @@ export default function VendorDashboardPage() {
                 Couples inquiring about your wedding services
               </CardDescription>
             </div>
-            <Link
+            <Link prefetch={false}
               href="/dashboard/vendor/booking-requests"
               className={
                 buttonVariants({ variant: "ghost", size: "sm" }) +
@@ -348,7 +348,7 @@ export default function VendorDashboardPage() {
                         <Calendar className="size-3 text-muted-foreground" />
                         <span>{formatEventDate(eventDate)}</span>
                       </span>
-                      <Link
+                      <Link prefetch={false}
                         href="/dashboard/vendor/booking-requests"
                         className={buttonVariants({
                           variant: "outline",
@@ -435,7 +435,7 @@ export default function VendorDashboardPage() {
           </div>
 
           <CardContent className="pt-0">
-            <Link
+            <Link prefetch={false}
               href="/dashboard/vendor/subscription"
               className={
                 buttonVariants({

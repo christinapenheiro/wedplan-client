@@ -182,7 +182,7 @@ export default async function ServiceDetailsPage({
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <Link
+      <Link prefetch={false}
         href="/browse-services"
         className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-primary"
       >

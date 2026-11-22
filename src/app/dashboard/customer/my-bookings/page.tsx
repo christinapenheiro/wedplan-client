@@ -328,7 +328,7 @@ export default function CustomerMyBookingsPage() {
             Track all the booking requests you have submitted to wedding vendors
           </p>
         </div>
-        <Link
+        <Link prefetch={false}
           href="/browse-services"
           className={
             buttonVariants({ variant: "default" }) +
@@ -394,7 +394,7 @@ export default function CustomerMyBookingsPage() {
             When you request a date with a vendor, your booking will appear here
             so you can follow its status.
           </p>
-          <Link
+          <Link prefetch={false}
             href="/browse-services"
             className={
               buttonVariants({ variant: "default" }) +
@@ -489,7 +489,7 @@ export default function CustomerMyBookingsPage() {
                         Requested on {formatRequestDate(booking.createdAt)}
                       </span>
                       <div className="flex items-center gap-2">
-                        <Link
+                        <Link prefetch={false}
                           href={`/browse-services/${booking.serviceId}`}
                           className={buttonVariants({
                             variant: "outline",

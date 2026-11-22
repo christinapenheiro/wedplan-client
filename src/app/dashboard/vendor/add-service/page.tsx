@@ -228,7 +228,7 @@ export default function VendorAddServicePage() {
       <div className="w-full max-w-2xl space-y-6">
         {/* Page header */}
         <div className="flex items-center gap-3 pb-2 border-b border-border">
-          <Link
+          <Link prefetch={false}
             href="/dashboard/vendor/my-services"
             aria-label="Back to my services"
             className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -427,7 +427,7 @@ export default function VendorAddServicePage() {
 
               {/* Footer actions */}
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-                <Link
+                <Link prefetch={false}
                   href="/dashboard/vendor/my-services"
                   className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                 >

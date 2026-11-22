@@ -120,7 +120,7 @@ export default async function BookingPage({ params }: BookingPageProps) {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Navigation Breadcrumb */}
-      <Link
+      <Link prefetch={false}
         href={`/browse-services/${id}`}
         className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-primary"
       >

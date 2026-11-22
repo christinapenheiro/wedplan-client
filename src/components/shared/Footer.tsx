@@ -129,7 +129,7 @@ export default function Footer() {
           {/* Column 1: Brand, Description, Newsletter & Socials (Span 5 cols on lg) */}
           <div className="space-y-6 lg:col-span-5">
             {/* Brand Logo & Title */}
-            <Link
+            <Link prefetch={false}
               href="/"
               className="inline-flex items-center gap-2.5 group outline-none"
               aria-label="WedPlan Home"
@@ -219,7 +219,7 @@ export default function Footer() {
                 <ul className="space-y-2.5 text-xs">
                   {category.links.map((link) => (
                     <li key={link.label}>
-                      <Link
+                      <Link prefetch={false}
                         href={link.href}
                         className="text-[#756770] dark:text-[#A797A2] hover:text-[#99616E] dark:hover:text-[#99616E] transition-colors inline-block"
                       >
@@ -301,19 +301,19 @@ export default function Footer() {
 
           {/* Legal / Policy Links */}
           <div className="flex flex-wrap items-center justify-center gap-4 text-[11px]">
-            <Link href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
+            <Link prefetch={false} href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
               Privacy Policy
             </Link>
             <span className="text-[#D2D3D0] dark:text-[#423940]">·</span>
-            <Link href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
+            <Link prefetch={false} href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
               Terms of Service
             </Link>
             <span className="text-[#D2D3D0] dark:text-[#423940]">·</span>
-            <Link href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
+            <Link prefetch={false} href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
               Cookie Preferences
             </Link>
             <span className="text-[#D2D3D0] dark:text-[#423940]">·</span>
-            <Link href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
+            <Link prefetch={false} href="#" className="hover:text-[#99616E] hover:underline underline-offset-4 transition-colors">
               Security
             </Link>
           </div>
