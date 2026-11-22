@@ -36,6 +36,24 @@ function getInitials(name?: string | null): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+/**
+ * Subscribes to URL hash changes so nav highlighting reacts to in-page links,
+ * manual hash edits, and back/forward navigation.
+ */
+function subscribeToHash(onChange: () => void) {
+  window.addEventListener("hashchange", onChange);
+  window.addEventListener("popstate", onChange);
+  return () => {
+    window.removeEventListener("hashchange", onChange);
+    window.removeEventListener("popstate", onChange);
+  };
+}
+
+/** Reads the current URL hash, or an empty string when there is none. */
+function getHashSnapshot() {
+  return window.location.hash;
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -46,6 +64,13 @@ export default function Navbar() {
   // Mobile drawer state
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [isSigningOut, setIsSigningOut] = React.useState(false);
+
+  // Active in-page hash (e.g. "#why-choose-us") so hash links can show a selected state
+  const activeHash = React.useSyncExternalStore(
+    subscribeToHash,
+    getHashSnapshot,
+    () => "",
+  );
 
   /**
    * Dispatches Better Auth sign-out request, clears active session cookies,
@@ -80,32 +105,65 @@ export default function Navbar() {
   };
 
   /**
-   * Helper to determine whether a given route matches the current browser pathname.
+   * Determines whether a route matches the current pathname. For hash links the
+   * pathname must be "/" and the hash must match, so "Why Choose Us" highlights
+   * only while its section is targeted.
    */
   const isActive = (path: string) => {
-    if (path.startsWith("/#")) return false;
-    if (path === "/") return pathname === "/";
+    if (path.startsWith("/#")) {
+      return pathname === "/" && activeHash === path.slice(1);
+    }
+    if (path === "/") return pathname === "/" && !activeHash;
     return pathname.startsWith(path);
   };
 
   /**
-   * Smoothly scrolls to on-page hash targets if already on the homepage.
+   * Waits for a hash target to mount (e.g. right after navigating from another
+   * page), then smooth-scrolls to it. Gives up after ~10s to avoid a loop.
+   */
+  const scrollToHashTarget = (targetId: string) => {
+    let attempts = 0;
+    const attemptScroll = () => {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.dispatchEvent(new Event("hashchange"));
+        return;
+      }
+      attempts += 1;
+      if (attempts < 600) {
+        window.requestAnimationFrame(attemptScroll);
+      }
+    };
+    window.requestAnimationFrame(attemptScroll);
+  };
+
+  /**
+   * Smoothly scrolls to on-page hash targets when already on the homepage.
+   * From any other page it routes home first (without Next's default scroll),
+   * then scrolls to the section once it has mounted.
    */
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
   ) => {
-    if (href.startsWith("/#")) {
-      const targetId = href.replace("/#", "");
-      if (pathname === "/") {
-        e.preventDefault();
-        const element = document.getElementById(targetId);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
-          window.history.pushState(null, "", `#${targetId}`);
-        }
+    if (!href.startsWith("/#")) return;
+
+    e.preventDefault();
+    const targetId = href.slice(2);
+
+    if (pathname === "/") {
+      const element = document.getElementById(targetId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        window.history.pushState(null, "", `#${targetId}`);
+        window.dispatchEvent(new Event("hashchange"));
       }
+      return;
     }
+
+    router.push(href, { scroll: false });
+    scrollToHashTarget(targetId);
   };
 
   // Base navigation links always visible to visitors
