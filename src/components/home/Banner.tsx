@@ -16,52 +16,52 @@ import {
  */
 const BANNER_CARDS = [
   {
-    url: "https://i.ibb.co.com/Ps2z5bMT/download-15.jpg",
+    url: "/images/timeless-vows.webp",
     title: "Timeless Vows",
     category: "CEREMONY",
   },
   {
-    url: "https://i.ibb.co.com/w9N8Z75/download-14.jpg",
+    url: "/images/romantic-florals.webp",
     title: "Romantic Florals",
     category: "DECOR & STYLING",
   },
   {
-    url: "https://i.ibb.co.com/GvpJ297L/download-13.jpg",
+    url: "/images/golden-hour-bliss.webp",
     title: "Golden Hour Bliss",
     category: "PORTRAITS",
   },
   {
-    url: "https://i.ibb.co.com/21FdfVgh/download-10.jpg",
+    url: "/images/grand-banquet.webp",
     title: "Grand Banquet",
     category: "RECEPTION",
   },
   {
-    url: "https://i.ibb.co.com/nyqJKff/25-Stunning-Bridal-Shower-Themes-for-2026-From-Garden-Party-to-Old-Money-Glam.jpg",
+    url: "/images/bridal-glamour.webp",
     title: "Bridal Glamour",
     category: "BRIDAL SHOWER",
   },
   {
-    url: "https://i.ibb.co.com/VWXdJ7wn/download-9.jpg",
+    url: "/images/rustic-romance.webp",
     title: "Rustic Romance",
     category: "DESTINATION",
   },
   {
-    url: "https://i.ibb.co.com/Xk6L42dx/download-8.jpg",
+    url: "/images/classic-elegance.webp",
     title: "Classic Elegance",
     category: "TABLESCAPE",
   },
   {
-    url: "https://i.ibb.co.com/23fDRYLT/How-To-Create-The-Perfect-Blue-Wedding.jpg",
+    url: "/images/serene-blue-palette.webp",
     title: "Serene Blue Palette",
     category: "THEME DESIGN",
   },
   {
-    url: "https://i.ibb.co.com/HT0dpmXh/Wedding.jpg",
+    url: "/images/candlelit-intimacy.webp",
     title: "Candlelit Intimacy",
     category: "EVENING SOIRÉE",
   },
   {
-    url: "https://i.ibb.co.com/nNnCYdG8/Burgundy-Wedding-Aisle-Decor-Deep-Berry-Rose-Petals-Flower-Girl-Basket-Wine-Red-Wedding-Ceremony-E.jpg",
+    url: "/images/burgundy-rose-aisle.webp",
     title: "Burgundy Rose Aisle",
     category: "AISLE FLORALS",
   },
@@ -331,7 +331,6 @@ export default function Banner() {
                     src={card.url}
                     alt={card.title}
                     fill
-                    unoptimized
                     sizes="(max-width: 768px) 280px, 400px"
                     className="object-cover transition-transform duration-700 ease-out hover:scale-105"
                   />
