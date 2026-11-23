@@ -15,6 +15,7 @@ const client =
   });
 
 globalForMongo.mongoClient = client;
+await client.connect();
 const db = client.db("wedplan");
 // const resend = new Resend(process.env.RESEND_API_KEY);
 
