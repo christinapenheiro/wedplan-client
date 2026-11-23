@@ -119,7 +119,7 @@ BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=your_32_character_better_auth_secret_here
 
 # MongoDB Database URI (for Better Auth Mongo Adapter)
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/wedplan?retryWrites=true&w=majority
+MONGODB_URI
 
 # Google OAuth Credentials (Optional)
 GOOGLE_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
@@ -138,7 +138,7 @@ Create a `.env` file in the `wedplan_server` directory:
 
 ```env
 PORT=8000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/wedplan?retryWrites=true&w=majority
+MONGODB_URI
 CLIENT_URL=http://localhost:3000
 
 # Stripe Secret & Webhook Keys (Test Mode)

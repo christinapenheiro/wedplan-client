@@ -89,8 +89,6 @@ const NAV_CATEGORIES = [
       { label: "Why Choose Us", href: "/#why-choose-us" },
       { label: "Dashboard", href: "/dashboard" },
       { label: "Vendor Membership", href: "/dashboard/vendor/subscription" },
-      { label: "Sign In", href: "/sign-in" },
-      { label: "Create Account", href: "/sign-up" },
     ],
   },
 ];

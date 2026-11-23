@@ -230,12 +230,12 @@ export default function WhyChooseUs() {
                 <span>Browse Directory</span>
                 <ArrowRight className="size-4" />
               </Link>
-              <Link prefetch={false}
+              {/* <Link prefetch={false}
                 href="/sign-up"
                 className="w-full sm:w-auto inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/30 bg-white/10 hover:bg-white/20 px-7 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-xs transition-colors cursor-pointer"
               >
                 <span>Join as a Vendor</span>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
